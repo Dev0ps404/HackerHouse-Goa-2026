@@ -35,6 +35,12 @@ export const Shield: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props })
   </svg>
 );
 
+export const User: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
+  </svg>
+);
+
 export const UserCheck: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M8.5 11a4 4 0 100-8 4 4 0 000 8zm8.5 0l2 2 4-4" />
@@ -56,6 +62,12 @@ export const UserPlus: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props 
 export const Code: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+  </svg>
+);
+
+export const Code2: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16 18l6-6-6-6M8 6l-6 6 6 6" />
   </svg>
 );
 
