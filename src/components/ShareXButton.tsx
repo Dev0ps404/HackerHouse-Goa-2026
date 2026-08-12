@@ -61,7 +61,7 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
       const filename = format === 'pfp' ? 'hh-goa-2026-pfp.png' : 'hh-goa-2026-builder.png';
       const imageFile = new File([blob], filename, { type: 'image/png' });
 
-      // 3. Mobile / Supported Browsers: Native Direct File Share via Web Share API
+      // 3. Mobile Devices: Direct Native File Share via Web Share API
       if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
         try {
           await navigator.share({
@@ -70,10 +70,9 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
             files: [imageFile],
           });
           setIsSharing(false);
-          onToast('Shared successfully!', 'success');
+          onToast('Shared successfully to X!', 'success');
           return;
         } catch (shareError: any) {
-          // If user cancelled native share sheet, don't fallback to window
           if (shareError.name === 'AbortError') {
             setIsSharing(false);
             return;
@@ -81,7 +80,22 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
         }
       }
 
-      // 4. Desktop / Web Fallback Flow: Auto-download PNG & Open X Window
+      // 4. Desktop / Web Flow: Copy Image to Clipboard + Auto-Download + Open X Window
+      let copiedToClipboard = false;
+      try {
+        if (navigator.clipboard && window.ClipboardItem) {
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              'image/png': blob,
+            }),
+          ]);
+          copiedToClipboard = true;
+        }
+      } catch (clipboardErr) {
+        console.warn('Clipboard image write not permitted:', clipboardErr);
+      }
+
+      // Trigger automatic PNG download for desktop fallback
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -91,10 +105,14 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      // Open Twitter / X Post Window
+      // Open Twitter / X Post Intent Window
       shareToX();
 
-      onToast('Image saved! Click the 🖼️ icon in X to attach your frame.', 'info');
+      if (copiedToClipboard) {
+        onToast('Image copied to clipboard! Press Ctrl+V in X to paste your image.', 'success');
+      } else {
+        onToast('Image saved! Click the 🖼️ icon in X to attach your frame.', 'info');
+      }
     } catch (err) {
       console.warn('Share error fallback:', err);
       shareToX();
