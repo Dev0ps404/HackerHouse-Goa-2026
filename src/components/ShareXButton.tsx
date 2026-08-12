@@ -61,8 +61,13 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
       const filename = format === 'pfp' ? 'hh-goa-2026-pfp.png' : 'hh-goa-2026-builder.png';
       const imageFile = new File([blob], filename, { type: 'image/png' });
 
-      // 3. Mobile Devices: Direct Native File Share via Web Share API
-      if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+      // Check if user is on a mobile device (iOS/Android)
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        typeof navigator !== 'undefined' ? navigator.userAgent : ''
+      );
+
+      // 3. Mobile Devices ONLY: Native File Share Sheet
+      if (isMobile && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
         try {
           await navigator.share({
             title: 'Hacker House Goa 2026 Builder Identity',
@@ -80,7 +85,7 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
         }
       }
 
-      // 4. Desktop / Web Flow: Copy Image to Clipboard + Auto-Download + Open X Window
+      // 4. Desktop Chrome / Edge / Web: Copy Image to Clipboard + Auto-Download + DIRECTLY Open X in Chrome
       let copiedToClipboard = false;
       try {
         if (navigator.clipboard && window.ClipboardItem) {
@@ -95,7 +100,7 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
         console.warn('Clipboard image write not permitted:', clipboardErr);
       }
 
-      // Trigger automatic PNG download for desktop fallback
+      // Auto download image file for desktop users
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -105,13 +110,13 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      // Open Twitter / X Post Intent Window
+      // DIRECTLY Open Twitter / X Post Window in Chrome (Bypassing Windows OS Share Dialog)
       shareToX();
 
       if (copiedToClipboard) {
-        onToast('Image copied to clipboard! Press Ctrl+V in X to paste your image.', 'success');
+        onToast('X opened! Image copied to clipboard — press Ctrl+V in X to paste image.', 'success');
       } else {
-        onToast('Image saved! Click the 🖼️ icon in X to attach your frame.', 'info');
+        onToast('X opened! Image saved to downloads — click 🖼️ icon to attach.', 'info');
       }
     } catch (err) {
       console.warn('Share error fallback:', err);
@@ -132,7 +137,7 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
       {isSharing ? (
         <>
           <Loader2 className="w-4 h-4 animate-spin text-white" />
-          <span>Preparing Share...</span>
+          <span>Opening X...</span>
         </>
       ) : (
         <>
