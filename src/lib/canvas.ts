@@ -1,3 +1,5 @@
+import templateImgUrl from '../assets/hhgoa-template.png';
+
 export type FrameFormat = 'pfp' | 'builder';
 
 export interface RenderOptions {
@@ -15,6 +17,7 @@ export interface RenderOptions {
 // Preload high-res official reference template image
 let cachedTemplateImg: HTMLImageElement | null = null;
 let isTemplateLoading = false;
+const loadListeners: Array<() => void> = [];
 
 function loadTemplateImage(onComplete?: () => void) {
   if (cachedTemplateImg && cachedTemplateImg.complete && cachedTemplateImg.naturalWidth > 0) {
@@ -22,25 +25,32 @@ function loadTemplateImage(onComplete?: () => void) {
     return;
   }
 
+  if (onComplete) {
+    loadListeners.push(onComplete);
+  }
+
   if (typeof window === 'undefined') return;
 
   if (!isTemplateLoading) {
     isTemplateLoading = true;
     const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.src = '/hhgoa-template.png';
+    img.src = templateImgUrl;
     img.onload = () => {
       cachedTemplateImg = img;
       isTemplateLoading = false;
-      onComplete?.();
+      while (loadListeners.length > 0) {
+        const callback = loadListeners.shift();
+        callback?.();
+      }
     };
-    img.onerror = () => {
+    img.onerror = (err) => {
+      console.error('Failed to load master artwork template:', err);
       isTemplateLoading = false;
     };
   }
 }
 
-// Start preloading immediately
+// Start preloading immediately on module load
 if (typeof window !== 'undefined') {
   loadTemplateImage();
 }
@@ -61,7 +71,7 @@ export function drawCanvasFrame(options: RenderOptions): void {
 
   ctx.clearRect(0, 0, width, height);
 
-  // If template image is not yet cached, request redraw when loaded
+  // If template image is not ready yet, queue re-render when loaded
   if (!cachedTemplateImg || !cachedTemplateImg.complete) {
     loadTemplateImage(() => {
       drawCanvasFrame(options);
@@ -91,7 +101,7 @@ function renderBuilderFormat(
   role: string,
   builderTitle: string
 ) {
-  // 1. Draw Master Reference Template Background if available
+  // 1. Draw Master Reference Template Background
   if (cachedTemplateImg && cachedTemplateImg.complete && cachedTemplateImg.naturalWidth > 0) {
     ctx.drawImage(cachedTemplateImg, 0, 0, width, height);
   } else {
@@ -100,7 +110,7 @@ function renderBuilderFormat(
     ctx.fillRect(0, 0, width, height);
   }
 
-  // 2. Central Circular Photo Aperture (Exact Pixel Coordinates: cx=540, cy=610, radius=245)
+  // 2. Central Circular Photo Aperture (Exact Coordinates: cx=540, cy=610, radius=245)
   const photoCenterX = 540;
   const photoCenterY = 610;
   const photoRadius = 245;
