@@ -16,6 +16,35 @@ export const ArrowRight: React.FC<IconProps> = ({ className = 'w-5 h-5', ...prop
   </svg>
 );
 
+export const ArrowUp: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+  </svg>
+);
+
+export const ArrowDown: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+  </svg>
+);
+
+export const ZoomIn: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    <line x1="11" y1="8" x2="11" y2="14" />
+    <line x1="8" y1="11" x2="14" y2="11" />
+  </svg>
+);
+
+export const ZoomOut: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    <line x1="8" y1="11" x2="14" y2="11" />
+  </svg>
+);
+
 export const Compass: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
     <circle cx="12" cy="12" r="10" />
