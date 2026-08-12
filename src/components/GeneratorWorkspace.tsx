@@ -28,10 +28,15 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
   } = useImageProcessor();
 
   const handleGenerate = () => {
-    if (!imageState.name.trim() || !imageState.role.trim()) {
-      onToast('Please enter your name and stack/role for your Builder card.', 'error');
-      return;
+    if (imageState.format === 'builder') {
+      const hasName = typeof imageState.name === 'string' && imageState.name.trim().length > 0;
+      const hasRole = typeof imageState.role === 'string' && imageState.role.trim().length > 0;
+      if (!hasName || !hasRole) {
+        onToast('Please enter your name and stack/role for your Builder ID card.', 'error');
+        return;
+      }
     }
+
 
     if (!imageState.imageElement) {
       onToast('Please upload a photo first!', 'error');
@@ -66,7 +71,7 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
             CREATE YOUR <span className="text-yellow-400">IDENTITY</span>
           </h2>
           <p className="text-emerald-100 text-sm sm:text-base">
-            Upload your photo, customize your builder details, and export your branded Hacker House Goa collectible card.
+            Upload your photo, select your format, customize your details, and export your branded Hacker House Goa graphic.
           </p>
         </div>
 
@@ -99,13 +104,15 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
 
               <FormatSelector format={imageState.format} onSelectFormat={setFormat} />
 
-              <IdentityForm
-                name={imageState.name}
-                role={imageState.role}
-                builderTitle={imageState.builderTitle}
-                onNameChange={setName}
-                onRoleChange={setRole}
-              />
+              {imageState.format === 'builder' && (
+                <IdentityForm
+                  name={imageState.name}
+                  role={imageState.role}
+                  builderTitle={imageState.builderTitle}
+                  onNameChange={setName}
+                  onRoleChange={setRole}
+                />
+              )}
 
               {imageState.imageElement && (
                 <ImageEditor
@@ -121,7 +128,7 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
               <div className="pt-2 flex items-center justify-between text-[11px] font-mono text-emerald-300 border-t border-emerald-900">
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
-                  Your photo is processed safely in your browser.
+                  Your photo is processed in your browser.
                 </span>
               </div>
 
