@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, Code2, Sparkles } from './Icons';
+import { User, Code2, Sparkles, AlertCircle } from './Icons';
 
 interface IdentityFormProps {
   name: string;
@@ -16,6 +16,8 @@ export const IdentityForm: React.FC<IdentityFormProps> = ({
   onNameChange,
   onRoleChange,
 }) => {
+  const isNameEmpty = name.trim().length === 0;
+
   return (
     <div className="w-full space-y-4">
       <label className="block text-xs font-mono font-bold text-yellow-300 uppercase tracking-wider mb-1">
@@ -36,11 +38,19 @@ export const IdentityForm: React.FC<IdentityFormProps> = ({
             type="text"
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
-            placeholder="e.g. Devansh Agarwal"
+            placeholder="Enter your name to continue..."
             maxLength={32}
-            className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#011F15] border border-yellow-500/40 text-white placeholder-emerald-400/60 text-sm focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/50 transition-all font-medium"
+            className={`w-full pl-10 pr-4 py-3 rounded-xl bg-[#011F15] border ${
+              isNameEmpty ? 'border-pink-500/80 focus:border-pink-400' : 'border-yellow-500/40 focus:border-yellow-400'
+            } text-white placeholder-emerald-400/60 text-sm focus:outline-none focus:ring-1 focus:ring-yellow-400/50 transition-all font-medium`}
           />
         </div>
+        {isNameEmpty && (
+          <p className="text-[11px] font-mono text-pink-400 mt-1 flex items-center gap-1">
+            <AlertCircle className="w-3 h-3" />
+            Enter your name to continue.
+          </p>
+        )}
       </div>
 
       {/* Stack / Role Input */}
@@ -57,7 +67,7 @@ export const IdentityForm: React.FC<IdentityFormProps> = ({
             type="text"
             value={role}
             onChange={(e) => onRoleChange(e.target.value)}
-            placeholder="e.g. React & AI Engineer"
+            placeholder="e.g. Full Stack Developer"
             maxLength={40}
             className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#011F15] border border-yellow-500/40 text-white placeholder-emerald-400/60 text-sm focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/50 transition-all font-medium"
           />
