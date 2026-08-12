@@ -14,7 +14,6 @@ export interface RenderOptions {
   positionY: number; // -100 to 100 (% offset)
 }
 
-// Preload high-res official reference template image
 let cachedTemplateImg: HTMLImageElement | null = null;
 let isTemplateLoading = false;
 const loadListeners: Array<() => void> = [];
@@ -50,7 +49,6 @@ function loadTemplateImage(onComplete?: () => void) {
   }
 }
 
-// Start preloading immediately on module load
 if (typeof window !== 'undefined') {
   loadTemplateImage();
 }
@@ -71,7 +69,6 @@ export function drawCanvasFrame(options: RenderOptions): void {
 
   ctx.clearRect(0, 0, width, height);
 
-  // If template image is not ready yet, queue re-render when loaded
   if (!cachedTemplateImg || !cachedTemplateImg.complete) {
     loadTemplateImage(() => {
       drawCanvasFrame(options);
@@ -87,7 +84,7 @@ export function drawCanvasFrame(options: RenderOptions): void {
 
 /**
  * EXACT OFFICIAL REFERENCE DESIGN: BUILDER ID CARD (1080 x 1350)
- * 100% Pixel-Perfect Match using Master Artwork Template
+ * 100% Perfect Pixel Alignment matching Reference Poster Template
  */
 function renderBuilderFormat(
   ctx: CanvasRenderingContext2D,
@@ -101,22 +98,20 @@ function renderBuilderFormat(
   role: string,
   builderTitle: string
 ) {
-  // 1. Draw Master Reference Template Background
+  // 1. Draw Master Reference Poster Background (1080 x 1350)
   if (cachedTemplateImg && cachedTemplateImg.complete && cachedTemplateImg.naturalWidth > 0) {
     ctx.drawImage(cachedTemplateImg, 0, 0, width, height);
   } else {
-    // Fallback background while loading
     ctx.fillStyle = '#FFFDF0';
     ctx.fillRect(0, 0, width, height);
   }
 
-  // 2. Central Circular Photo Aperture (Exact Coordinates: cx=540, cy=610, radius=245)
+  // 2. Central Circular Photo Aperture (Aligned inside template's woven ring: cx=540, cy=472, radius=240)
   const photoCenterX = 540;
-  const photoCenterY = 610;
-  const photoRadius = 245;
+  const photoCenterY = 472;
+  const photoRadius = 240;
 
   ctx.save();
-  // Circular Photo Mask
   ctx.beginPath();
   ctx.arc(photoCenterX, photoCenterY, photoRadius, 0, Math.PI * 2);
   ctx.clip();
@@ -137,26 +132,26 @@ function renderBuilderFormat(
     ctx.fillStyle = '#02402E';
     ctx.fillRect(photoCenterX - photoRadius, photoCenterY - photoRadius, photoRadius * 2, photoRadius * 2);
     ctx.fillStyle = '#FFC107';
-    ctx.font = 'bold 30px "Space Grotesk", sans-serif';
+    ctx.font = 'bold 32px "Space Grotesk", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('DROP PHOTO HERE', photoCenterX, photoCenterY);
   }
   ctx.restore();
 
-  // 3. User Name Overlay Pill Box (Dark Emerald Box: cx=540, cy=918)
+  // 3. User Name Overlay Box (Replaces template name box cleanly at cx=540, cy=782)
   const displayName = name.trim() ? name.toUpperCase() : 'YOUR NAME';
-  const nameBoxW = 650;
-  const nameBoxH = 72;
+  const nameBoxW = 630;
+  const nameBoxH = 70;
   const nameBoxX = photoCenterX - nameBoxW / 2;
-  const nameBoxY = 882;
+  const nameBoxY = 747;
 
   ctx.save();
   ctx.fillStyle = '#02402E'; // Dark Emerald
-  ctx.strokeStyle = '#E2B842'; // Gold Line
+  ctx.strokeStyle = '#E2B842'; // Gold Border
   ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.roundRect(nameBoxX, nameBoxY, nameBoxW, nameBoxH, 22);
+  ctx.roundRect(nameBoxX, nameBoxY, nameBoxW, nameBoxH, 20);
   ctx.fill();
   ctx.stroke();
 
@@ -167,19 +162,19 @@ function renderBuilderFormat(
   ctx.fillText(displayName, photoCenterX, nameBoxY + nameBoxH / 2);
   ctx.restore();
 
-  // 4. User Role/Stack Overlay Pill Box (Solar Yellow Box: cx=540, cy=996)
+  // 4. User Role Overlay Box (Replaces template role box cleanly at cx=540, cy=860)
   const displayRole = role.trim() ? role.toUpperCase() : 'FULL STACK DEVELOPER';
   const roleBoxW = 520;
-  const roleBoxH = 56;
+  const roleBoxH = 54;
   const roleBoxX = photoCenterX - roleBoxW / 2;
-  const roleBoxY = 968;
+  const roleBoxY = 833;
 
   ctx.save();
   ctx.fillStyle = '#FFC107'; // Solar Yellow
   ctx.strokeStyle = '#02402E'; // Dark Emerald Line
   ctx.lineWidth = 2.5;
   ctx.beginPath();
-  ctx.roundRect(roleBoxX, roleBoxY, roleBoxW, roleBoxH, 18);
+  ctx.roundRect(roleBoxX, roleBoxY, roleBoxW, roleBoxH, 16);
   ctx.fill();
   ctx.stroke();
 
@@ -190,17 +185,17 @@ function renderBuilderFormat(
   ctx.fillText(`⚡   ${displayRole}   ⚡`, photoCenterX, roleBoxY + roleBoxH / 2);
   ctx.restore();
 
-  // 5. Dynamic Builder Class Title in Column 1
+  // 5. Dynamic Builder Class Title in Column 1 (cx=242, cy=970)
   const displayTitle = builderTitle || 'TERMINAL WIZARD';
-  const titleX = 245;
-  const titleY = 1115;
+  const titleX = 242;
+  const titleY = 970;
 
   ctx.save();
   ctx.fillStyle = '#FFFDF0';
-  ctx.fillRect(titleX - 100, titleY - 14, 200, 32); // Clear default placeholder text
+  ctx.fillRect(titleX - 95, titleY - 14, 190, 28);
 
   ctx.fillStyle = '#E6005C';
-  ctx.font = '900 20px "Space Grotesk", sans-serif';
+  ctx.font = '900 18px "Space Grotesk", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(displayTitle.toUpperCase(), titleX, titleY);
@@ -209,7 +204,6 @@ function renderBuilderFormat(
 
 /**
  * EXACT OFFICIAL REFERENCE DESIGN: PFP FRAME (1080 x 1080)
- * 100% Pixel-Perfect Square Format
  */
 function renderPFPFormat(
   ctx: CanvasRenderingContext2D,
@@ -223,7 +217,6 @@ function renderPFPFormat(
   role: string,
   _builderTitle: string
 ) {
-  // Draw Master Reference Template background scaled to square
   if (cachedTemplateImg && cachedTemplateImg.complete && cachedTemplateImg.naturalWidth > 0) {
     ctx.drawImage(cachedTemplateImg, 0, 0, width, height);
   } else {
@@ -231,10 +224,9 @@ function renderPFPFormat(
     ctx.fillRect(0, 0, width, height);
   }
 
-  // Circular Photo Aperture (Square Centered: cx=540, cy=490, radius=245)
   const photoCenterX = 540;
-  const photoCenterY = 490;
-  const photoRadius = 245;
+  const photoCenterY = 380;
+  const photoRadius = 240;
 
   ctx.save();
   ctx.beginPath();
@@ -266,17 +258,17 @@ function renderPFPFormat(
 
   // Name Box
   const displayName = name.trim() ? name.toUpperCase() : 'YOUR NAME';
-  const nameBoxW = 650;
-  const nameBoxH = 72;
+  const nameBoxW = 630;
+  const nameBoxH = 70;
   const nameBoxX = photoCenterX - nameBoxW / 2;
-  const nameBoxY = 760;
+  const nameBoxY = 620;
 
   ctx.save();
   ctx.fillStyle = '#02402E';
   ctx.strokeStyle = '#E2B842';
   ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.roundRect(nameBoxX, nameBoxY, nameBoxW, nameBoxH, 22);
+  ctx.roundRect(nameBoxX, nameBoxY, nameBoxW, nameBoxH, 20);
   ctx.fill();
   ctx.stroke();
 
@@ -290,16 +282,16 @@ function renderPFPFormat(
   // Role Box
   const displayRole = role.trim() ? role.toUpperCase() : 'FULL STACK DEVELOPER';
   const roleBoxW = 520;
-  const roleBoxH = 56;
+  const roleBoxH = 54;
   const roleBoxX = photoCenterX - roleBoxW / 2;
-  const roleBoxY = 846;
+  const roleBoxY = 705;
 
   ctx.save();
   ctx.fillStyle = '#FFC107';
   ctx.strokeStyle = '#02402E';
   ctx.lineWidth = 2.5;
   ctx.beginPath();
-  ctx.roundRect(roleBoxX, roleBoxY, roleBoxW, roleBoxH, 18);
+  ctx.roundRect(roleBoxX, roleBoxY, roleBoxW, roleBoxH, 16);
   ctx.fill();
   ctx.stroke();
 
@@ -308,25 +300,6 @@ function renderPFPFormat(
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(`⚡   ${displayRole}   ⚡`, photoCenterX, roleBoxY + roleBoxH / 2);
-  ctx.restore();
-
-  // Bottom Pink Ribbon Banner (#FRAMEINGOA)
-  const ribbonY = height - 110;
-  const ribbonW = width - 200;
-  const ribbonH = 60;
-  const ribbonX = width / 2 - ribbonW / 2;
-
-  ctx.save();
-  ctx.fillStyle = '#E6005C';
-  ctx.beginPath();
-  ctx.roundRect(ribbonX, ribbonY, ribbonW, ribbonH, 14);
-  ctx.fill();
-
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = '900 28px "Space Grotesk", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('✦   #FRAMEINGOA   ✦', width / 2, ribbonY + ribbonH / 2);
   ctx.restore();
 }
 

@@ -28,11 +28,9 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
   } = useImageProcessor();
 
   const handleGenerate = () => {
-    if (imageState.format === 'builder') {
-      if (!imageState.name.trim() || !imageState.role.trim()) {
-        onToast('Please enter your name and stack/role for your Builder ID card.', 'error');
-        return;
-      }
+    if (!imageState.name.trim() || !imageState.role.trim()) {
+      onToast('Please enter your name and stack/role for your Builder card.', 'error');
+      return;
     }
 
     if (!imageState.imageElement) {
@@ -101,15 +99,13 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
 
               <FormatSelector format={imageState.format} onSelectFormat={setFormat} />
 
-              {imageState.format === 'builder' && (
-                <IdentityForm
-                  name={imageState.name}
-                  role={imageState.role}
-                  builderTitle={imageState.builderTitle}
-                  onNameChange={setName}
-                  onRoleChange={setRole}
-                />
-              )}
+              <IdentityForm
+                name={imageState.name}
+                role={imageState.role}
+                builderTitle={imageState.builderTitle}
+                onNameChange={setName}
+                onRoleChange={setRole}
+              />
 
               {imageState.imageElement && (
                 <ImageEditor
@@ -125,7 +121,7 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
               <div className="pt-2 flex items-center justify-between text-[11px] font-mono text-emerald-300 border-t border-emerald-900">
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
-                  Your photo is processed in your browser.
+                  Your photo is processed safely in your browser.
                 </span>
               </div>
 

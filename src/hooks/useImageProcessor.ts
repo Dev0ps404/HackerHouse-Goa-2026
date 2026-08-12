@@ -28,7 +28,7 @@ export function useImageProcessor() {
     file: null,
     imageUrl: null,
     imageElement: null,
-    format: 'pfp',
+    format: 'builder', // Default to official 4:5 poster format
     name: '',
     role: '',
     builderTitle: 'THE BUILDER',
@@ -95,7 +95,6 @@ export function useImageProcessor() {
         }
       }
 
-      // Check file type or extension (lenient to handle Windows file mime-type issues)
       const hasImageMime = processableFile.type ? processableFile.type.startsWith('image/') : false;
       const hasImageExt = SUPPORTED_EXTENSIONS.some((ext) => filename.endsWith(ext));
 
@@ -103,14 +102,12 @@ export function useImageProcessor() {
         throw new Error('That file format is not supported. Please upload a JPG, PNG, or HEIC image.');
       }
 
-      // Create Object URL
       const objectUrl = URL.createObjectURL(processableFile);
       if (activeUrlRef.current) {
         URL.revokeObjectURL(activeUrlRef.current);
       }
       activeUrlRef.current = objectUrl;
 
-      // Load Image Element
       const img = new Image();
 
       await new Promise<void>((resolve, reject) => {
