@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { drawCanvasFrame, type FrameFormat } from '../lib/canvas';
-import type { TeamMember } from '../types/team';
 import { Sparkles, Move } from './Icons';
 
 interface PreviewProps {
@@ -12,7 +11,6 @@ interface PreviewProps {
   zoom: number;
   positionX: number;
   positionY: number;
-  teamMembers?: TeamMember[];
   isGenerating: boolean;
   onPositionChange: (posX: number, posY: number) => void;
 }
@@ -26,7 +24,6 @@ export const Preview: React.FC<PreviewProps> = ({
   zoom,
   positionX,
   positionY,
-  teamMembers = [],
   isGenerating,
   onPositionChange,
 }) => {
@@ -55,10 +52,9 @@ export const Preview: React.FC<PreviewProps> = ({
         zoom,
         positionX,
         positionY,
-        teamMembers,
       });
     }
-  }, [imageElement, format, name, role, builderTitle, zoom, positionX, positionY, teamMembers]);
+  }, [imageElement, format, name, role, builderTitle, zoom, positionX, positionY]);
 
   // Handle subtle 3D Tilt on Hover for Desktop
   const handleTiltMove = (e: React.MouseEvent) => {
@@ -80,7 +76,7 @@ export const Preview: React.FC<PreviewProps> = ({
 
   // Handle direct Mouse/Touch Drag to Pan on Preview Canvas
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!imageElement || format === 'team') return;
+    if (!imageElement) return;
     setIsDraggingCanvas(true);
     dragStartRef.current = {
       x: e.clientX,
@@ -103,7 +99,7 @@ export const Preview: React.FC<PreviewProps> = ({
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (!imageElement || format === 'team' || !e.touches[0]) return;
+    if (!imageElement || !e.touches[0]) return;
     setIsDraggingCanvas(true);
     dragStartRef.current = {
       x: e.touches[0].clientX,
@@ -132,7 +128,7 @@ export const Preview: React.FC<PreviewProps> = ({
           <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
           LIVE 3D COLLECTIBLE PREVIEW
         </span>
-        {imageElement && format !== 'team' && (
+        {imageElement && (
           <span className="text-[11px] font-mono text-emerald-300 flex items-center gap-1">
             <Move className="w-3 h-3 text-yellow-400" />
             Drag photo to pan
@@ -160,18 +156,12 @@ export const Preview: React.FC<PreviewProps> = ({
             transform: `rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg)`,
             transition: isDraggingCanvas ? 'none' : 'transform 0.15s ease-out',
           }}
-          className={`relative w-full ${
-            format === 'team' ? 'max-w-[500px]' : 'max-w-[420px]'
-          } rounded-3xl p-3 border border-yellow-400/30 bg-[#011F15] shadow-2xl overflow-hidden transition-all duration-300`}
+          className="relative w-full max-w-[420px] rounded-3xl p-3 border border-yellow-400/30 bg-[#011F15] shadow-2xl overflow-hidden transition-all duration-300"
         >
           {/* Aspect ratio frame box */}
           <div
             className={`relative w-full rounded-2xl overflow-hidden bg-slate-950 shadow-inner flex items-center justify-center ${
-              format === 'pfp'
-                ? 'aspect-square'
-                : format === 'team'
-                ? 'aspect-[1350/1080]'
-                : 'aspect-[1080/1350]'
+              format === 'pfp' ? 'aspect-square' : 'aspect-[1080/1350]'
             }`}
           >
             {/* Canvas Element */}

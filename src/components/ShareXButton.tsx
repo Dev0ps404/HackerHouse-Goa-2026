@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { shareToX } from '../lib/xShare';
 import { drawCanvasFrame, type FrameFormat } from '../lib/canvas';
-import type { TeamMember } from '../types/team';
 import { Loader2 } from './Icons';
 
 interface ShareXButtonProps {
@@ -13,7 +12,6 @@ interface ShareXButtonProps {
   zoom: number;
   positionX: number;
   positionY: number;
-  teamMembers?: TeamMember[];
   onToast: (msg: string, type?: 'success' | 'info' | 'error') => void;
 }
 
@@ -26,7 +24,6 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
   zoom,
   positionX,
   positionY,
-  teamMembers = [],
   onToast,
 }) => {
   const [isSharing, setIsSharing] = useState(false);
@@ -47,7 +44,6 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
         zoom,
         positionX,
         positionY,
-        teamMembers,
       });
 
       // 2. Convert Canvas to Blob
@@ -62,12 +58,7 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
         return;
       }
 
-      const filename =
-        format === 'pfp'
-          ? 'hh-goa-2026-pfp.png'
-          : format === 'team'
-          ? 'hh-goa-2026-team-card.png'
-          : 'hh-goa-2026-builder-card.png';
+      const filename = format === 'pfp' ? 'hh-goa-2026-pfp.png' : 'hh-goa-2026-builder-card.png';
 
       const imageFile = new File([blob], filename, { type: 'image/png' });
 

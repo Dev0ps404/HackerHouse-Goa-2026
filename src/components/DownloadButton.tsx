@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Download, Check, Loader2 } from './Icons';
 import { drawCanvasFrame, type FrameFormat } from '../lib/canvas';
-import type { TeamMember } from '../types/team';
 
 interface DownloadButtonProps {
   imageElement: HTMLImageElement | null;
@@ -12,7 +11,6 @@ interface DownloadButtonProps {
   zoom: number;
   positionX: number;
   positionY: number;
-  teamMembers?: TeamMember[];
   onSuccessToast: (msg: string) => void;
 }
 
@@ -25,7 +23,6 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
   zoom,
   positionX,
   positionY,
-  teamMembers = [],
   onSuccessToast,
 }) => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -45,7 +42,6 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
       zoom,
       positionX,
       positionY,
-      teamMembers,
     });
 
     exportCanvas.toBlob(
@@ -55,12 +51,7 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
           return;
         }
 
-        const filename =
-          format === 'pfp'
-            ? 'hh-goa-2026-pfp.png'
-            : format === 'team'
-            ? 'hh-goa-2026-team-card.png'
-            : 'hh-goa-2026-builder-card.png';
+        const filename = format === 'pfp' ? 'hh-goa-2026-pfp.png' : 'hh-goa-2026-builder-card.png';
 
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
