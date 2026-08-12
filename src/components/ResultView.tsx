@@ -1,0 +1,123 @@
+import React, { useEffect } from 'react';
+import { motion } from './Motion';
+import { DownloadButton } from './DownloadButton';
+
+import { ShareXButton } from './ShareXButton';
+import { RotateCcw, CheckCircle2 } from './Icons';
+
+import { drawCanvasFrame, type FrameFormat } from '../lib/canvas';
+import confetti from 'canvas-confetti';
+
+interface ResultViewProps {
+  imageElement: HTMLImageElement | null;
+  format: FrameFormat;
+  name: string;
+  role: string;
+  builderTitle: string;
+  zoom: number;
+  positionX: number;
+  positionY: number;
+  onResetAll: () => void;
+  onToast: (msg: string, type?: 'success' | 'info') => void;
+}
+
+export const ResultView: React.FC<ResultViewProps> = ({
+  imageElement,
+  format,
+  name,
+  role,
+  builderTitle,
+  zoom,
+  positionX,
+  positionY,
+  onResetAll,
+  onToast,
+}) => {
+  // Trigger subtle festive confetti burst on mount
+  useEffect(() => {
+    try {
+      confetti({
+        particleCount: 60,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#FF9F1C', '#FF6B35', '#00F2FE', '#FFFFFF'],
+      });
+    } catch (e) {
+      // Ignore if confetti fails
+    }
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      className="w-full flex flex-col items-center text-center space-y-6"
+    >
+      {/* Success Banner */}
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/40 text-amber-300 font-mono text-xs font-bold shadow-lg shadow-amber-500/10">
+        <CheckCircle2 className="w-4 h-4 text-amber-400" />
+        YOUR HH GOA 2026 FRAME IS READY
+      </div>
+
+      <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        OWN YOUR <span className="text-gradient-solar">GOA IDENTITY</span>
+      </h2>
+
+      {/* Prominent Generated Preview Box */}
+      <div className="relative w-full max-w-[420px] rounded-3xl glass-panel p-3 border-2 border-amber-500/40 bg-slate-950 shadow-2xl overflow-hidden glow-solar">
+        <div
+          className={`relative w-full rounded-2xl overflow-hidden bg-slate-900 shadow-inner ${
+            format === 'pfp' ? 'aspect-square' : 'aspect-[1080/1350]'
+          }`}
+        >
+          <canvas
+            ref={(canvas) => {
+              if (canvas) {
+                drawCanvasFrame({
+                  canvas,
+                  image: imageElement,
+                  format,
+                  name,
+                  role,
+                  builderTitle,
+                  zoom,
+                  positionX,
+                  positionY,
+                });
+              }
+            }}
+            className="w-full h-full object-contain rounded-2xl"
+          />
+        </div>
+      </div>
+
+      {/* Action Buttons Row */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md pt-2">
+        <DownloadButton
+          imageElement={imageElement}
+          format={format}
+          name={name}
+          role={role}
+          builderTitle={builderTitle}
+          zoom={zoom}
+          positionX={positionX}
+          positionY={positionY}
+          onSuccessToast={(msg) => onToast(msg, 'success')}
+        />
+
+        <ShareXButton onInfoToast={(msg) => onToast(msg, 'info')} />
+      </div>
+
+      {/* Create Another Button */}
+      <button
+        type="button"
+        onClick={onResetAll}
+        className="inline-flex items-center gap-2 text-xs font-mono font-semibold text-slate-400 hover:text-amber-400 transition-colors pt-2"
+      >
+        <RotateCcw className="w-3.5 h-3.5" />
+        Create Another Frame / Edit
+      </button>
+    </motion.div>
+  );
+};

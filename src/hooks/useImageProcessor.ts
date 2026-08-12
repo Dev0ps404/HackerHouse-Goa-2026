@@ -1,0 +1,202 @@
+import { useState, useCallback, useEffect, useRef } from 'react';
+import type { FrameFormat } from '../lib/canvas';
+
+import { generateBuilderTitle } from '../lib/builderTitles';
+import heic2any from 'heic2any';
+
+export interface ImageState {
+  file: File | null;
+  imageUrl: string | null;
+  imageElement: HTMLImageElement | null;
+  format: FrameFormat;
+  name: string;
+  role: string;
+  builderTitle: string;
+  zoom: number;
+  positionX: number;
+  positionY: number;
+  isProcessing: boolean;
+  isGenerating: boolean;
+  isGenerated: boolean;
+  error: string | null;
+}
+
+const SUPPORTED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.heic', '.heif', '.webp', '.bmp', '.gif', '.svg'];
+
+export function useImageProcessor() {
+  const [imageState, setImageState] = useState<ImageState>({
+    file: null,
+    imageUrl: null,
+    imageElement: null,
+    format: 'pfp',
+    name: '',
+    role: '',
+    builderTitle: 'THE BUILDER',
+    zoom: 1.0,
+    positionX: 0,
+    positionY: 0,
+    isProcessing: false,
+    isGenerating: false,
+    isGenerated: false,
+    error: null,
+  });
+
+  const activeUrlRef = useRef<string | null>(null);
+
+  // Clean up object URLs to avoid memory leaks
+  useEffect(() => {
+    return () => {
+      if (activeUrlRef.current) {
+        URL.revokeObjectURL(activeUrlRef.current);
+      }
+    };
+  }, []);
+
+  // Automatically update builder title when role/stack changes
+  useEffect(() => {
+    if (imageState.role) {
+      const generated = generateBuilderTitle(imageState.role);
+      setImageState((prev) => ({ ...prev, builderTitle: generated }));
+    }
+  }, [imageState.role]);
+
+  /**
+   * Process and load uploaded file. Handles JPG, PNG, WebP, and HEIC files cleanly.
+   */
+  const processFile = useCallback(async (file: File) => {
+    setImageState((prev) => ({
+      ...prev,
+      isProcessing: true,
+      error: null,
+    }));
+
+    try {
+      let processableFile = file;
+
+      // Check for HEIC / HEIF extensions or mime types
+      const filename = file.name.toLowerCase();
+      const isHeic = filename.endsWith('.heic') || filename.endsWith('.heif') || file.type.includes('heic') || file.type.includes('heif');
+
+      if (isHeic) {
+        try {
+          const convertedBlob = await heic2any({
+            blob: file,
+            toType: 'image/jpeg',
+            quality: 0.9,
+          });
+
+          const blobResult = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+          processableFile = new File([blobResult], file.name.replace(/\.(heic|heif)$/i, '.jpg'), {
+            type: 'image/jpeg',
+          });
+        } catch (heicErr) {
+          console.warn('HEIC conversion error:', heicErr);
+          throw new Error('Failed to process HEIC file. Please upload a JPG or PNG image.');
+        }
+      }
+
+      // Check file type or extension (lenient to handle Windows file mime-type issues)
+      const hasImageMime = processableFile.type ? processableFile.type.startsWith('image/') : false;
+      const hasImageExt = SUPPORTED_EXTENSIONS.some((ext) => filename.endsWith(ext));
+
+      if (!hasImageMime && !hasImageExt) {
+        throw new Error('That file format is not supported. Please upload a JPG, PNG, or HEIC image.');
+      }
+
+      // Create Object URL
+      const objectUrl = URL.createObjectURL(processableFile);
+      if (activeUrlRef.current) {
+        URL.revokeObjectURL(activeUrlRef.current);
+      }
+      activeUrlRef.current = objectUrl;
+
+      // Load Image Element
+      const img = new Image();
+
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('Failed to load image. File may be corrupt or inaccessible.'));
+        img.src = objectUrl;
+      });
+
+      setImageState((prev) => ({
+        ...prev,
+        file: processableFile,
+        imageUrl: objectUrl,
+        imageElement: img,
+        zoom: 1.0,
+        positionX: 0,
+        positionY: 0,
+        isProcessing: false,
+        error: null,
+      }));
+    } catch (err: any) {
+      setImageState((prev) => ({
+        ...prev,
+        isProcessing: false,
+        error: err.message || 'Error loading photo.',
+      }));
+    }
+  }, []);
+
+  const setFormat = useCallback((format: FrameFormat) => {
+    setImageState((prev) => ({ ...prev, format }));
+  }, []);
+
+  const setName = useCallback((name: string) => {
+    setImageState((prev) => ({ ...prev, name }));
+  }, []);
+
+  const setRole = useCallback((role: string) => {
+    setImageState((prev) => ({ ...prev, role }));
+  }, []);
+
+  const setZoom = useCallback((zoom: number) => {
+    setImageState((prev) => ({ ...prev, zoom }));
+  }, []);
+
+  const setPosition = useCallback((positionX: number, positionY: number) => {
+    setImageState((prev) => ({ ...prev, positionX, positionY }));
+  }, []);
+
+  const resetPosition = useCallback(() => {
+    setImageState((prev) => ({ ...prev, zoom: 1.0, positionX: 0, positionY: 0 }));
+  }, []);
+
+  const removeImage = useCallback(() => {
+    if (activeUrlRef.current) {
+      URL.revokeObjectURL(activeUrlRef.current);
+      activeUrlRef.current = null;
+    }
+    setImageState((prev) => ({
+      ...prev,
+      file: null,
+      imageUrl: null,
+      imageElement: null,
+      isGenerated: false,
+      error: null,
+    }));
+  }, []);
+
+  const setGenerating = useCallback((isGenerating: boolean) => {
+    setImageState((prev) => ({ ...prev, isGenerating }));
+  }, []);
+
+  const setGenerated = useCallback((isGenerated: boolean) => {
+    setImageState((prev) => ({ ...prev, isGenerated }));
+  }, []);
+
+  return {
+    imageState,
+    processFile,
+    setFormat,
+    setName,
+    setRole,
+    setZoom,
+    setPosition,
+    resetPosition,
+    removeImage,
+    setGenerating,
+    setGenerated,
+  };
+}
