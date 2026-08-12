@@ -16,47 +16,6 @@ export const ArrowRight: React.FC<IconProps> = ({ className = 'w-5 h-5', ...prop
   </svg>
 );
 
-export const ArrowLeft: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-  </svg>
-);
-
-export const ArrowUp: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-  </svg>
-);
-
-export const ArrowDown: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-  </svg>
-);
-
-export const Download: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-  </svg>
-);
-
-export const ZoomIn: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    <line x1="11" y1="8" x2="11" y2="14" />
-    <line x1="8" y1="11" x2="14" y2="11" />
-  </svg>
-);
-
-export const ZoomOut: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    <line x1="8" y1="11" x2="14" y2="11" />
-  </svg>
-);
-
 export const Compass: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
     <circle cx="12" cy="12" r="10" />
@@ -76,39 +35,15 @@ export const Shield: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props })
   </svg>
 );
 
-export const User: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-  </svg>
-);
-
 export const UserCheck: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M8.5 11a4 4 0 100-8 4 4 0 000 8zm8.5 0l2 2 4-4" />
   </svg>
 );
 
-export const Users: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-3-3.87M9 21v-2a4 4 0 013-3.87m-4-1.13a4 4 0 110-8 4 4 0 010 8zm10 0a4 4 0 100-8 4 4 0 000 8z" />
-  </svg>
-);
-
-export const UserPlus: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M8.5 11a4 4 0 100-8 4 4 0 000 8zm11-3v6m3-3h-6" />
-  </svg>
-);
-
 export const Code: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-  </svg>
-);
-
-export const Code2: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16 18l6-6-6-6M8 6l-6 6 6 6" />
   </svg>
 );
 
@@ -164,7 +99,105 @@ export const Trash2: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props })
 
 export const CheckCircle2: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+    <polyline points="22 4 12 14.01 9 11.01" />
+  </svg>
+);
+
+export const AlertTriangle: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01" />
+  </svg>
+);
+
+export const Loader2: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={`animate-spin ${className}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v4m0 12v4m8-10h-4M6 12H2m15.364-6.364l-2.828 2.828M7.464 16.536L4.636 19.364m12.728 0l-2.828-2.828M7.464 7.464L4.636 4.636" />
+  </svg>
+);
+
+export const IdCard: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <circle cx="8" cy="11" r="3" />
+    <line x1="14" y1="9" x2="18" y2="9" />
+    <line x1="14" y1="13" x2="18" y2="13" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 18a4 4 0 016 0" />
+  </svg>
+);
+
+export const User: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
+  </svg>
+);
+
+export const Code2: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <polyline points="16 18 22 12 16 6" />
+    <polyline points="8 6 2 12 8 18" />
+  </svg>
+);
+
+export const ZoomIn: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    <line x1="11" y1="8" x2="11" y2="14" />
+    <line x1="8" y1="11" x2="14" y2="11" />
+  </svg>
+);
+
+export const ZoomOut: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    <line x1="8" y1="11" x2="14" y2="11" />
+  </svg>
+);
+
+export const Move: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <polyline points="5 9 2 12 5 15" />
+    <polyline points="9 5 12 2 15 5" />
+    <polyline points="15 19 12 22 9 19" />
+    <polyline points="19 9 22 12 19 15" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <line x1="12" y1="2" x2="12" y2="22" />
+  </svg>
+);
+
+export const RotateCcw: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <polyline points="1 4 1 10 7 10" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.51 15a9 9 0 102.13-9.36L1 10" />
+  </svg>
+);
+
+export const ArrowUp: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <line x1="12" y1="19" x2="12" y2="5" />
+    <polyline points="5 12 12 5 19 12" />
+  </svg>
+);
+
+export const ArrowDown: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <polyline points="19 12 12 19 5 12" />
+  </svg>
+);
+
+export const ArrowLeft: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12 19 5 12 12 5" />
+  </svg>
+);
+
+export const Download: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
   </svg>
 );
 
@@ -187,56 +220,5 @@ export const Info: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) =
     <circle cx="12" cy="12" r="10" />
     <line x1="12" y1="16" x2="12" y2="12" />
     <line x1="12" y1="8" x2="12.01" y2="8" />
-  </svg>
-);
-
-export const AlertTriangle: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-  </svg>
-);
-
-export const Loader2: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <line x1="12" y1="2" x2="12" y2="6" />
-    <line x1="12" y1="18" x2="12" y2="22" />
-    <line x1="4.93" y1="4.93" x2="7.76" y2="7.76" />
-    <line x1="16.24" y1="16.24" x2="19.07" y2="19.07" />
-    <line x1="2" y1="12" x2="6" y2="12" />
-    <line x1="18" y1="12" x2="22" y2="12" />
-    <line x1="4.93" y1="19.07" x2="7.76" y2="16.24" />
-    <line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
-  </svg>
-);
-
-export const Move: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <polyline points="5 9 2 12 5 15" />
-    <polyline points="9 5 12 2 15 5" />
-    <polyline points="15 19 12 22 9 19" />
-    <polyline points="19 9 22 12 19 15" />
-    <line x1="2" y1="12" x2="22" y2="12" />
-    <line x1="12" y1="2" x2="12" y2="22" />
-  </svg>
-);
-
-export const IdCard: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <rect x="2" y="4" width="20" height="16" rx="2" />
-    <circle cx="8" cy="11" r="3" />
-    <line x1="14" y1="9" x2="18" y2="9" />
-    <line x1="14" y1="13" x2="18" y2="13" />
-  </svg>
-);
-
-export const Upload: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-  </svg>
-);
-
-export const RotateCcw: React.FC<IconProps> = ({ className = 'w-5 h-5', ...props }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M1 4v6h6M3.51 15a9 9 0 102.13-9.36L1 10" />
   </svg>
 );

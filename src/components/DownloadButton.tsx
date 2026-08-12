@@ -51,8 +51,7 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
           return;
         }
 
-        const filename = format === 'pfp' ? 'hh-goa-2026-pfp.png' : 'hh-goa-2026-builder-card.png';
-
+        const filename = format === 'pfp' ? 'hh-goa-2026-pfp.png' : 'hh-goa-2026-builder.png';
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -64,7 +63,7 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
 
         setIsDownloading(false);
         setDownloaded(true);
-        onSuccessToast(`Saved as ${filename}`);
+        onSuccessToast(`Frame saved as ${filename}`);
 
         setTimeout(() => setDownloaded(false), 3000);
       },

@@ -1,23 +1,21 @@
 export const X_SHARE_HASHTAGS = ['FrameInGoa', 'HHGoa2026'];
-export const X_SHARE_TEXT = `Just claimed my HH Goa 2026 builder identity ⚡🌴`;
+export const X_SHARE_TEXT = `Just got my HH Goa 2026 builder frame ⚡🌴\n\nSee you in Goa.`;
 
 /**
- * Constructs the official Twitter/X Intent URL with prefilled text caption, hashtags, and website URL for auto preview card.
+ * Constructs the Twitter/X Intent URL with prefilled post caption.
  */
-export function buildXShareUrl(shareUrl?: string, customText?: string): string {
+export function buildXShareUrl(customText?: string): string {
   const text = customText || X_SHARE_TEXT;
   const hashtags = X_SHARE_HASHTAGS.join(',');
   const encodedText = encodeURIComponent(text);
-  const currentOrigin = typeof window !== 'undefined' ? window.location.href : 'https://github.com/Dev0ps404/HackerHouse-Goa-2026';
-  const targetUrl = encodeURIComponent(shareUrl || currentOrigin);
   
-  return `https://x.com/intent/post?text=${encodedText}&hashtags=${hashtags}&url=${targetUrl}`;
+  return `https://x.com/intent/post?text=${encodedText}&hashtags=${hashtags}`;
 }
 
 /**
  * Triggers the X sharing action by opening a popup window.
  */
-export function shareToX(shareUrl?: string, customText?: string): void {
-  const url = buildXShareUrl(shareUrl, customText);
-  window.open(url, '_blank', 'noopener,noreferrer,width=600,height=520');
+export function shareToX(customText?: string): void {
+  const url = buildXShareUrl(customText);
+  window.open(url, '_blank', 'noopener,noreferrer,width=600,height=500');
 }

@@ -29,14 +29,11 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
 
   const handleGenerate = () => {
     if (imageState.format === 'builder') {
-      const hasName = typeof imageState.name === 'string' && imageState.name.trim().length > 0;
-      const hasRole = typeof imageState.role === 'string' && imageState.role.trim().length > 0;
-      if (!hasName || !hasRole) {
+      if (!imageState.name.trim() || !imageState.role.trim()) {
         onToast('Please enter your name and stack/role for your Builder ID card.', 'error');
         return;
       }
     }
-
 
     if (!imageState.imageElement) {
       onToast('Please upload a photo first!', 'error');

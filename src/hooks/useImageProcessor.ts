@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { FrameFormat } from '../lib/canvas';
+
 import { generateBuilderTitle } from '../lib/builderTitles';
 import heic2any from 'heic2any';
 
@@ -27,7 +28,7 @@ export function useImageProcessor() {
     file: null,
     imageUrl: null,
     imageElement: null,
-    format: 'builder',
+    format: 'pfp',
     name: '',
     role: '',
     builderTitle: 'THE BUILDER',
@@ -42,6 +43,7 @@ export function useImageProcessor() {
 
   const activeUrlRef = useRef<string | null>(null);
 
+  // Clean up object URLs to avoid memory leaks
   useEffect(() => {
     return () => {
       if (activeUrlRef.current) {
@@ -50,6 +52,7 @@ export function useImageProcessor() {
     };
   }, []);
 
+  // Automatically update builder title when role/stack changes
   useEffect(() => {
     if (imageState.role) {
       const generated = generateBuilderTitle(imageState.role);
@@ -57,6 +60,9 @@ export function useImageProcessor() {
     }
   }, [imageState.role]);
 
+  /**
+   * Process and load uploaded file. Handles JPG, PNG, WebP, and HEIC files cleanly.
+   */
   const processFile = useCallback(async (file: File) => {
     setImageState((prev) => ({
       ...prev,
@@ -66,6 +72,8 @@ export function useImageProcessor() {
 
     try {
       let processableFile = file;
+
+      // Check for HEIC / HEIF extensions or mime types
       const filename = file.name.toLowerCase();
       const isHeic = filename.endsWith('.heic') || filename.endsWith('.heif') || file.type.includes('heic') || file.type.includes('heif');
 
@@ -87,6 +95,7 @@ export function useImageProcessor() {
         }
       }
 
+      // Check file type or extension (lenient to handle Windows file mime-type issues)
       const hasImageMime = processableFile.type ? processableFile.type.startsWith('image/') : false;
       const hasImageExt = SUPPORTED_EXTENSIONS.some((ext) => filename.endsWith(ext));
 
@@ -94,12 +103,14 @@ export function useImageProcessor() {
         throw new Error('That file format is not supported. Please upload a JPG, PNG, or HEIC image.');
       }
 
+      // Create Object URL
       const objectUrl = URL.createObjectURL(processableFile);
       if (activeUrlRef.current) {
         URL.revokeObjectURL(activeUrlRef.current);
       }
       activeUrlRef.current = objectUrl;
 
+      // Load Image Element
       const img = new Image();
 
       await new Promise<void>((resolve, reject) => {

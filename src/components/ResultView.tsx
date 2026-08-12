@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { motion } from './Motion';
 import { DownloadButton } from './DownloadButton';
+
 import { ShareXButton } from './ShareXButton';
 import { RotateCcw, CheckCircle2 } from './Icons';
+
 import { drawCanvasFrame, type FrameFormat } from '../lib/canvas';
 import confetti from 'canvas-confetti';
 
@@ -16,7 +18,7 @@ interface ResultViewProps {
   positionX: number;
   positionY: number;
   onResetAll: () => void;
-  onToast: (msg: string, type?: 'success' | 'info' | 'error') => void;
+  onToast: (msg: string, type?: 'success' | 'info') => void;
 }
 
 export const ResultView: React.FC<ResultViewProps> = ({
@@ -38,7 +40,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
         particleCount: 60,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#FFE600', '#FF007A', '#00F0FF', '#FFFFFF'],
+        colors: ['#FF9F1C', '#FF6B35', '#00F2FE', '#FFFFFF'],
       });
     } catch (e) {
       // Ignore if confetti fails
@@ -53,19 +55,19 @@ export const ResultView: React.FC<ResultViewProps> = ({
       className="w-full flex flex-col items-center text-center space-y-6"
     >
       {/* Success Banner */}
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#033B29] border border-yellow-400/40 text-yellow-300 font-mono text-xs font-bold shadow-lg">
-        <CheckCircle2 className="w-4 h-4 text-yellow-400" />
-        YOUR HH GOA 2026 CARD IS READY
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/40 text-amber-300 font-mono text-xs font-bold shadow-lg shadow-amber-500/10">
+        <CheckCircle2 className="w-4 h-4 text-amber-400" />
+        YOUR HH GOA 2026 FRAME IS READY
       </div>
 
       <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-        OWN YOUR <span className="text-gradient-gold">GOA IDENTITY</span>
+        OWN YOUR <span className="text-gradient-solar">GOA IDENTITY</span>
       </h2>
 
       {/* Prominent Generated Preview Box */}
-      <div className="relative w-full max-w-[420px] rounded-3xl glass-panel p-3 border-2 border-yellow-400/40 bg-[#022E1F] shadow-2xl overflow-hidden glow-gold">
+      <div className="relative w-full max-w-[420px] rounded-3xl glass-panel p-3 border-2 border-amber-500/40 bg-slate-950 shadow-2xl overflow-hidden glow-solar">
         <div
-          className={`relative w-full rounded-2xl overflow-hidden bg-[#011F15] shadow-inner ${
+          className={`relative w-full rounded-2xl overflow-hidden bg-slate-900 shadow-inner ${
             format === 'pfp' ? 'aspect-square' : 'aspect-[1080/1350]'
           }`}
         >
@@ -104,24 +106,14 @@ export const ResultView: React.FC<ResultViewProps> = ({
           onSuccessToast={(msg) => onToast(msg, 'success')}
         />
 
-        <ShareXButton
-          imageElement={imageElement}
-          format={format}
-          name={name}
-          role={role}
-          builderTitle={builderTitle}
-          zoom={zoom}
-          positionX={positionX}
-          positionY={positionY}
-          onToast={onToast}
-        />
+        <ShareXButton onInfoToast={(msg) => onToast(msg, 'info')} />
       </div>
 
       {/* Create Another Button */}
       <button
         type="button"
         onClick={onResetAll}
-        className="inline-flex items-center gap-2 text-xs font-mono font-semibold text-emerald-300 hover:text-yellow-300 transition-colors pt-2 cursor-pointer"
+        className="inline-flex items-center gap-2 text-xs font-mono font-semibold text-slate-400 hover:text-amber-400 transition-colors pt-2"
       >
         <RotateCcw className="w-3.5 h-3.5" />
         Create Another Frame / Edit
