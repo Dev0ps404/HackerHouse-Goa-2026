@@ -3,6 +3,7 @@ import { useImageProcessor } from '../hooks/useImageProcessor';
 import { UploadZone } from './UploadZone';
 import { FormatSelector } from './FormatSelector';
 import { IdentityForm } from './IdentityForm';
+import { TeamEditor } from './TeamEditor';
 import { ImageEditor } from './ImageEditor';
 import { Preview } from './Preview';
 import { GenerateButton } from './GenerateButton';
@@ -23,19 +24,30 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
     setPosition,
     resetPosition,
     removeImage,
+    addTeamMember,
+    removeTeamMember,
+    updateTeamMember,
     setGenerating,
     setGenerated,
   } = useImageProcessor();
 
   const handleGenerate = () => {
-    if (!imageState.name.trim() || !imageState.role.trim()) {
-      onToast('Please enter your name and stack/role for your Builder card.', 'error');
-      return;
-    }
+    if (imageState.format === 'team') {
+      const emptyMember = imageState.teamMembers.find((m) => !m.name.trim() || !m.role.trim());
+      if (emptyMember) {
+        onToast('Please fill out names and roles for all team members.', 'error');
+        return;
+      }
+    } else {
+      if (!imageState.name.trim() || !imageState.role.trim()) {
+        onToast('Please enter your name and stack/role for your Builder card.', 'error');
+        return;
+      }
 
-    if (!imageState.imageElement) {
-      onToast('Please upload a photo first!', 'error');
-      return;
+      if (!imageState.imageElement) {
+        onToast('Please upload a photo first!', 'error');
+        return;
+      }
     }
 
     setGenerating(true);
@@ -81,6 +93,7 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
             zoom={imageState.zoom}
             positionX={imageState.positionX}
             positionY={imageState.positionY}
+            teamMembers={imageState.teamMembers}
             onResetAll={handleResetAll}
             onToast={onToast}
           />
@@ -99,15 +112,24 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
 
               <FormatSelector format={imageState.format} onSelectFormat={setFormat} />
 
-              <IdentityForm
-                name={imageState.name}
-                role={imageState.role}
-                builderTitle={imageState.builderTitle}
-                onNameChange={setName}
-                onRoleChange={setRole}
-              />
+              {imageState.format === 'team' ? (
+                <TeamEditor
+                  teamMembers={imageState.teamMembers}
+                  onAddMember={addTeamMember}
+                  onRemoveMember={removeTeamMember}
+                  onUpdateMember={updateTeamMember}
+                />
+              ) : (
+                <IdentityForm
+                  name={imageState.name}
+                  role={imageState.role}
+                  builderTitle={imageState.builderTitle}
+                  onNameChange={setName}
+                  onRoleChange={setRole}
+                />
+              )}
 
-              {imageState.imageElement && (
+              {imageState.format !== 'team' && imageState.imageElement && (
                 <ImageEditor
                   zoom={imageState.zoom}
                   positionX={imageState.positionX}
@@ -126,7 +148,7 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
               </div>
 
               <GenerateButton
-                disabled={!imageState.imageElement}
+                disabled={imageState.format !== 'team' && !imageState.imageElement}
                 isGenerating={imageState.isGenerating}
                 onGenerate={handleGenerate}
               />
@@ -143,6 +165,7 @@ export const GeneratorWorkspace: React.FC<GeneratorWorkspaceProps> = ({ onToast 
                 zoom={imageState.zoom}
                 positionX={imageState.positionX}
                 positionY={imageState.positionY}
+                teamMembers={imageState.teamMembers}
                 isGenerating={imageState.isGenerating}
                 onPositionChange={setPosition}
               />

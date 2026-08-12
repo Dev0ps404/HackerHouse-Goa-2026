@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { FrameFormat } from '../lib/canvas';
-
+import type { TeamMember } from '../types/team';
 import { generateBuilderTitle } from '../lib/builderTitles';
 import heic2any from 'heic2any';
 
@@ -15,6 +15,7 @@ export interface ImageState {
   zoom: number;
   positionX: number;
   positionY: number;
+  teamMembers: TeamMember[];
   isProcessing: boolean;
   isGenerating: boolean;
   isGenerated: boolean;
@@ -23,18 +24,25 @@ export interface ImageState {
 
 const SUPPORTED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.heic', '.heif', '.webp', '.bmp', '.gif', '.svg'];
 
+const DEFAULT_TEAM_MEMBERS: TeamMember[] = [
+  { id: '1', name: 'DEVASHISH', role: 'AI ENGINEER', imageUrl: null, imageElement: null, zoom: 1.0, positionX: 0, positionY: 0 },
+  { id: '2', name: 'MADHAVAN', role: 'FULL STACK', imageUrl: null, imageElement: null, zoom: 1.0, positionX: 0, positionY: 0 },
+  { id: '3', name: 'ROHIT', role: 'UI/UX DESIGNER', imageUrl: null, imageElement: null, zoom: 1.0, positionX: 0, positionY: 0 },
+];
+
 export function useImageProcessor() {
   const [imageState, setImageState] = useState<ImageState>({
     file: null,
     imageUrl: null,
     imageElement: null,
-    format: 'builder', // Default to official 4:5 poster format
+    format: 'builder', // Default to 4:5 builder card format
     name: '',
     role: '',
     builderTitle: 'THE BUILDER',
     zoom: 1.0,
     positionX: 0,
     positionY: 0,
+    teamMembers: DEFAULT_TEAM_MEMBERS,
     isProcessing: false,
     isGenerating: false,
     isGenerated: false,
@@ -43,7 +51,6 @@ export function useImageProcessor() {
 
   const activeUrlRef = useRef<string | null>(null);
 
-  // Clean up object URLs to avoid memory leaks
   useEffect(() => {
     return () => {
       if (activeUrlRef.current) {
@@ -52,7 +59,6 @@ export function useImageProcessor() {
     };
   }, []);
 
-  // Automatically update builder title when role/stack changes
   useEffect(() => {
     if (imageState.role) {
       const generated = generateBuilderTitle(imageState.role);
@@ -60,9 +66,6 @@ export function useImageProcessor() {
     }
   }, [imageState.role]);
 
-  /**
-   * Process and load uploaded file. Handles JPG, PNG, WebP, and HEIC files cleanly.
-   */
   const processFile = useCallback(async (file: File) => {
     setImageState((prev) => ({
       ...prev,
@@ -72,8 +75,6 @@ export function useImageProcessor() {
 
     try {
       let processableFile = file;
-
-      // Check for HEIC / HEIF extensions or mime types
       const filename = file.name.toLowerCase();
       const isHeic = filename.endsWith('.heic') || filename.endsWith('.heif') || file.type.includes('heic') || file.type.includes('heif');
 
@@ -175,6 +176,39 @@ export function useImageProcessor() {
     }));
   }, []);
 
+  // Team Member Management Actions
+  const addTeamMember = useCallback(() => {
+    setImageState((prev) => {
+      if (prev.teamMembers.length >= 5) return prev;
+      const newId = String(Date.now());
+      const newMember: TeamMember = {
+        id: newId,
+        name: `BUILDER ${prev.teamMembers.length + 1}`,
+        role: 'DEVELOPER',
+        imageUrl: null,
+        imageElement: null,
+        zoom: 1.0,
+        positionX: 0,
+        positionY: 0,
+      };
+      return { ...prev, teamMembers: [...prev.teamMembers, newMember] };
+    });
+  }, []);
+
+  const removeTeamMember = useCallback((id: string) => {
+    setImageState((prev) => {
+      if (prev.teamMembers.length <= 2) return prev;
+      return { ...prev, teamMembers: prev.teamMembers.filter((m) => m.id !== id) };
+    });
+  }, []);
+
+  const updateTeamMember = useCallback((id: string, updates: Partial<TeamMember>) => {
+    setImageState((prev) => ({
+      ...prev,
+      teamMembers: prev.teamMembers.map((m) => (m.id === id ? { ...m, ...updates } : m)),
+    }));
+  }, []);
+
   const setGenerating = useCallback((isGenerating: boolean) => {
     setImageState((prev) => ({ ...prev, isGenerating }));
   }, []);
@@ -193,6 +227,9 @@ export function useImageProcessor() {
     setPosition,
     resetPosition,
     removeImage,
+    addTeamMember,
+    removeTeamMember,
+    updateTeamMember,
     setGenerating,
     setGenerated,
   };

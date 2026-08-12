@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { shareToX } from '../lib/xShare';
 import { drawCanvasFrame, type FrameFormat } from '../lib/canvas';
+import type { TeamMember } from '../types/team';
 import { Loader2 } from './Icons';
 
 interface ShareXButtonProps {
@@ -12,6 +13,7 @@ interface ShareXButtonProps {
   zoom: number;
   positionX: number;
   positionY: number;
+  teamMembers?: TeamMember[];
   onToast: (msg: string, type?: 'success' | 'info' | 'error') => void;
 }
 
@@ -24,6 +26,7 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
   zoom,
   positionX,
   positionY,
+  teamMembers = [],
   onToast,
 }) => {
   const [isSharing, setIsSharing] = useState(false);
@@ -44,6 +47,7 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
         zoom,
         positionX,
         positionY,
+        teamMembers,
       });
 
       // 2. Convert Canvas to Blob
@@ -58,20 +62,25 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
         return;
       }
 
-      const filename = format === 'pfp' ? 'hh-goa-2026-pfp.png' : 'hh-goa-2026-builder.png';
+      const filename =
+        format === 'pfp'
+          ? 'hh-goa-2026-pfp.png'
+          : format === 'team'
+          ? 'hh-goa-2026-team-card.png'
+          : 'hh-goa-2026-builder-card.png';
+
       const imageFile = new File([blob], filename, { type: 'image/png' });
 
-      // Check if user is on a mobile device (iOS/Android)
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         typeof navigator !== 'undefined' ? navigator.userAgent : ''
       );
 
-      // 3. Mobile Devices ONLY: Native File Share Sheet
+      // Mobile Native Share
       if (isMobile && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
         try {
           await navigator.share({
             title: 'Hacker House Goa 2026 Builder Identity',
-            text: `Just claimed my HH Goa 2026 builder frame ⚡🌴 #FrameInGoa`,
+            text: `Just framed my HH Goa 2026 builder identity ⚡🌴 #FrameInGoa #HHGoa2026`,
             files: [imageFile],
           });
           setIsSharing(false);
@@ -85,7 +94,7 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
         }
       }
 
-      // 4. Desktop Chrome / Edge / Web: Copy Image to Clipboard + Auto-Download + DIRECTLY Open X in Chrome
+      // Desktop Chrome / Web
       let copiedToClipboard = false;
       try {
         if (navigator.clipboard && window.ClipboardItem) {
@@ -100,7 +109,6 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
         console.warn('Clipboard image write not permitted:', clipboardErr);
       }
 
-      // Auto download image file for desktop users
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -110,7 +118,6 @@ export const ShareXButton: React.FC<ShareXButtonProps> = ({
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      // DIRECTLY Open Twitter / X Post Window in Chrome (Bypassing Windows OS Share Dialog)
       shareToX();
 
       if (copiedToClipboard) {

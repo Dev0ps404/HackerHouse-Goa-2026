@@ -4,6 +4,7 @@ import { DownloadButton } from './DownloadButton';
 import { ShareXButton } from './ShareXButton';
 import { RotateCcw, CheckCircle2 } from './Icons';
 import { drawCanvasFrame, type FrameFormat } from '../lib/canvas';
+import type { TeamMember } from '../types/team';
 import confetti from 'canvas-confetti';
 
 interface ResultViewProps {
@@ -15,6 +16,7 @@ interface ResultViewProps {
   zoom: number;
   positionX: number;
   positionY: number;
+  teamMembers?: TeamMember[];
   onResetAll: () => void;
   onToast: (msg: string, type?: 'success' | 'info' | 'error') => void;
 }
@@ -28,6 +30,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
   zoom,
   positionX,
   positionY,
+  teamMembers = [],
   onResetAll,
   onToast,
 }) => {
@@ -63,10 +66,18 @@ export const ResultView: React.FC<ResultViewProps> = ({
       </h2>
 
       {/* Prominent Generated Preview Box */}
-      <div className="relative w-full max-w-[420px] rounded-3xl glass-panel p-3 border-2 border-yellow-400/40 bg-[#022E1F] shadow-2xl overflow-hidden glow-gold">
+      <div
+        className={`relative w-full ${
+          format === 'team' ? 'max-w-[540px]' : 'max-w-[420px]'
+        } rounded-3xl glass-panel p-3 border-2 border-yellow-400/40 bg-[#022E1F] shadow-2xl overflow-hidden glow-gold`}
+      >
         <div
           className={`relative w-full rounded-2xl overflow-hidden bg-[#011F15] shadow-inner ${
-            format === 'pfp' ? 'aspect-square' : 'aspect-[1080/1350]'
+            format === 'pfp'
+              ? 'aspect-square'
+              : format === 'team'
+              ? 'aspect-[1350/1080]'
+              : 'aspect-[1080/1350]'
           }`}
         >
           <canvas
@@ -82,6 +93,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
                   zoom,
                   positionX,
                   positionY,
+                  teamMembers,
                 });
               }
             }}
@@ -101,6 +113,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
           zoom={zoom}
           positionX={positionX}
           positionY={positionY}
+          teamMembers={teamMembers}
           onSuccessToast={(msg) => onToast(msg, 'success')}
         />
 
@@ -113,6 +126,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
           zoom={zoom}
           positionX={positionX}
           positionY={positionY}
+          teamMembers={teamMembers}
           onToast={onToast}
         />
       </div>
