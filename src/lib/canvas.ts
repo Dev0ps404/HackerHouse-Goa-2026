@@ -29,14 +29,15 @@ export function drawCanvasFrame(options: RenderOptions): void {
   ctx.clearRect(0, 0, width, height);
 
   if (format === 'pfp') {
-    renderPFPFormat(ctx, width, height, image, zoom, positionX, positionY);
+    renderPFPFormat(ctx, width, height, image, zoom, positionX, positionY, name, role);
   } else {
     renderBuilderFormat(ctx, width, height, image, zoom, positionX, positionY, name, role, builderTitle);
   }
 }
 
 /**
- * PFP FRAME OVERLAY (1080 x 1080)
+ * EXACT RECREATION: RETRO TROPICAL PASSPORT PFP FRAME (1080 x 1080)
+ * Replicates the exact official reference design provided by user!
  */
 function renderPFPFormat(
   ctx: CanvasRenderingContext2D,
@@ -45,225 +46,340 @@ function renderPFPFormat(
   image: HTMLImageElement | null,
   zoom: number,
   posX: number,
-  posY: number
+  posY: number,
+  name: string,
+  role: string
 ) {
-  // 1. Rich Deep Emerald Background & Top Radial Glow
-  const bgGrad = ctx.createRadialGradient(width / 2, height / 2, 80, width / 2, height / 2, width * 0.75);
-  bgGrad.addColorStop(0, '#044D34');
-  bgGrad.addColorStop(0.5, '#023322');
-  bgGrad.addColorStop(1, '#011A11');
-  ctx.fillStyle = bgGrad;
+  // 1. Dark Emerald Outer Margin Background
+  ctx.fillStyle = '#012418';
   ctx.fillRect(0, 0, width, height);
 
-  // Top Gold Light Spotlight Beam
-  const topSpot = ctx.createRadialGradient(width / 2, 0, 10, width / 2, 0, 500);
-  topSpot.addColorStop(0, 'rgba(255, 230, 0, 0.22)');
-  topSpot.addColorStop(0.6, 'rgba(255, 230, 0, 0.04)');
-  topSpot.addColorStop(1, 'transparent');
-  ctx.fillStyle = topSpot;
-  ctx.fillRect(0, 0, width, 550);
+  // 2. Main Card Container (Warm Cream Retro Page)
+  const margin = 24;
+  const cardW = width - margin * 2;
+  const cardH = height - margin * 2;
+  const cardX = margin;
+  const cardY = margin;
 
-  // Bottom Pink Glow Accent
-  const botSpot = ctx.createRadialGradient(width / 2, height, 10, width / 2, height, 450);
-  botSpot.addColorStop(0, 'rgba(255, 0, 122, 0.2)');
-  botSpot.addColorStop(1, 'transparent');
-  ctx.fillStyle = botSpot;
-  ctx.fillRect(0, height - 450, width, 450);
-
-  // Grid Lines
+  // Outer Dark Emerald Border & Gold Inner Line
   ctx.save();
-  ctx.strokeStyle = 'rgba(255, 230, 0, 0.04)';
-  ctx.lineWidth = 1;
-  for (let x = 0; x <= width; x += 36) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, height);
-    ctx.stroke();
-  }
-  for (let y = 0; y <= height; y += 36) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(width, y);
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  // 2. Photo Aperture Geometry
-  const photoSize = width * 0.82;
-  const photoX = (width - photoSize) / 2;
-  const photoY = (height - photoSize) / 2 + 8;
-  const borderRadius = 44;
-
-  ctx.save();
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
-  ctx.shadowBlur = 40;
-  ctx.shadowOffsetY = 15;
-  ctx.fillStyle = '#011F15';
+  ctx.fillStyle = '#FFFDF0'; // Warm Retro Cream
+  ctx.strokeStyle = '#02402E'; // Dark Emerald
+  ctx.lineWidth = 10;
   ctx.beginPath();
-  ctx.roundRect(photoX, photoY, photoSize, photoSize, borderRadius);
+  ctx.roundRect(cardX, cardY, cardW, cardH, 32);
   ctx.fill();
+  ctx.stroke();
+
+  // Thin Inner Gold Border Line
+  ctx.strokeStyle = '#E2B842';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.roundRect(cardX + 12, cardY + 12, cardW - 24, cardH - 24, 24);
+  ctx.stroke();
   ctx.restore();
 
-  // Draw Photo
+  // 3. Top Center Lanyard Slot & Hanging Pink Lanyard Tag
+  ctx.save();
+  ctx.fillStyle = '#012418';
+  ctx.beginPath();
+  ctx.roundRect(width / 2 - 50, cardY + 6, 100, 16, 8);
+  ctx.fill();
+
+  const tagW = 130;
+  const tagH = 115;
+  const tagX = (width - tagW) / 2;
+  const tagY = cardY + 12;
+
+  ctx.fillStyle = '#E6005C';
+  ctx.strokeStyle = '#FFE600';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.roundRect(tagX, tagY, tagW, tagH, 14);
+  ctx.fill();
+  ctx.stroke();
+
+  drawVectorPalmTree(ctx, width / 2, tagY + 24, 18, '#FFE600');
+
+  ctx.fillStyle = '#FFE600';
+  ctx.font = '900 17px "Space Grotesk", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('HH', width / 2, tagY + 58);
+  ctx.fillText('GOA', width / 2, tagY + 78);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 13px "JetBrains Mono", monospace';
+  ctx.fillText('2026', width / 2, tagY + 98);
+  ctx.restore();
+
+  // 4. Top Left Postage Stamp (GOA INDIA)
+  ctx.save();
+  const stampX = cardX + 30;
+  const stampY = cardY + 30;
+  const stampW = 130;
+  const stampH = 110;
+
+  ctx.fillStyle = '#02402E';
+  ctx.fillRect(stampX, stampY, stampW, stampH);
+  ctx.fillStyle = '#FFFDF0';
+  ctx.fillRect(stampX + 5, stampY + 5, stampW - 10, stampH - 10);
+
+  ctx.fillStyle = '#E6005C';
+  ctx.font = '900 14px "Space Grotesk", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('GOA', stampX + 14, stampY + 24);
+  ctx.fillStyle = '#02402E';
+  ctx.font = 'bold 11px "Space Grotesk", sans-serif';
+  ctx.fillText('INDIA', stampX + 14, stampY + 38);
+
+  ctx.fillStyle = '#FF9900';
+  ctx.beginPath();
+  ctx.arc(stampX + 92, stampY + 65, 15, 0, Math.PI * 2);
+  ctx.fill();
+  drawVectorPalmTree(ctx, stampX + 88, stampY + 52, 16, '#02402E');
+
+  ctx.strokeStyle = '#E6005C';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  for (let i = 0; i < 3; i++) {
+    const yOff = stampY + 25 + i * 14;
+    ctx.moveTo(stampX + stampW + 8, yOff);
+    ctx.bezierCurveTo(stampX + stampW + 24, yOff - 5, stampX + stampW + 40, yOff + 5, stampX + stampW + 56, yOff);
+  }
+  ctx.stroke();
+  ctx.restore();
+
+  // 5. Top Right Circular Postmark Stamp
+  ctx.save();
+  const circleStampX = cardX + cardW - 95;
+  const circleStampY = cardY + 90;
+  const circleRadius = 60;
+
+  ctx.strokeStyle = '#02402E';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(circleStampX, circleStampY, circleRadius, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(circleStampX, circleStampY, circleRadius - 6, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.fillStyle = '#02402E';
+  ctx.font = 'bold 9px "Space Grotesk", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  drawCircularText(ctx, 'BUILD IN GOA ✦ SHIP FROM PARADISE', circleStampX, circleStampY, circleRadius - 12, -Math.PI / 2);
+  drawVectorPalmTree(ctx, circleStampX, circleStampY - 8, 18, '#02402E');
+  ctx.restore();
+
+  // 6. Main Headline Title: HACKER GOA HOUSE
+  const titleY = cardY + 178;
+  ctx.save();
+
+  ctx.fillStyle = '#02402E';
+  ctx.font = '900 48px "Space Grotesk", serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('HACKER', width / 2 - 70, titleY);
+
+  const goaW = 85;
+  const goaH = 38;
+  const goaX = width / 2 - goaW / 2;
+  const goaY = titleY - 34;
+
+  ctx.fillStyle = '#E6005C';
+  ctx.beginPath();
+  ctx.roundRect(goaX, goaY, goaW, goaH, 10);
+  ctx.fill();
+
+  ctx.fillStyle = '#FFE600';
+  ctx.font = '900 20px "Space Grotesk", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('GOA', width / 2, goaY + 26);
+
+  ctx.fillStyle = '#02402E';
+  ctx.font = '900 48px "Space Grotesk", serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('HOUSE', width / 2 + 70, titleY);
+  ctx.restore();
+
+  // 7. Side Tropical Elements
+  ctx.save();
+  // Left Wooden Signpost (BUILD, SHIP, REPEAT)
+  const signX = cardX + 65;
+  const signY = cardY + 320;
+
+  ctx.fillStyle = '#795548';
+  ctx.fillRect(signX + 35, signY, 12, 150);
+
+  ctx.fillStyle = '#FFC107';
+  ctx.beginPath();
+  ctx.roundRect(signX + 5, signY + 15, 75, 30, 5);
+  ctx.fill();
+  ctx.fillStyle = '#000000';
+  ctx.font = '900 13px "Space Grotesk", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('BUILD', signX + 42, signY + 35);
+
+  ctx.fillStyle = '#E6005C';
+  ctx.beginPath();
+  ctx.roundRect(signX - 5, signY + 55, 85, 30, 5);
+  ctx.fill();
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '900 13px "Space Grotesk", sans-serif';
+  ctx.fillText('SHIP', signX + 37, signY + 75);
+
+  ctx.fillStyle = '#02402E';
+  ctx.beginPath();
+  ctx.roundRect(signX, signY + 95, 95, 30, 5);
+  ctx.fill();
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '900 12px "Space Grotesk", sans-serif';
+  ctx.fillText('REPEAT', signX + 47, signY + 115);
+
+  // Surfboards Left
+  drawSurfboard(ctx, cardX + 40, cardY + 520, 32, 120, '#FFC107');
+  drawSurfboard(ctx, cardX + 75, cardY + 520, 32, 120, '#E6005C');
+
+  // Right Badge: LET'S BUILD!
+  const rightBadgeX = cardX + cardW - 100;
+  const rightBadgeY = cardY + 320;
+  ctx.fillStyle = '#FFC107';
+  ctx.strokeStyle = '#02402E';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(rightBadgeX - 35, rightBadgeY, 95, 56, 12);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#02402E';
+  ctx.font = '900 13px "Space Grotesk", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText("LET'S", rightBadgeX + 12, rightBadgeY + 23);
+  ctx.fillText('BUILD!', rightBadgeX + 12, rightBadgeY + 41);
+
+  // Villa & Scooter Right
+  drawGoaVilla(ctx, cardX + cardW - 130, cardY + 410);
+  drawPinkScooter(ctx, cardX + cardW - 95, cardY + 520);
+  ctx.restore();
+
+  // 8. Central Circular Avatar Frame
+  const photoCenterX = width / 2;
+  const photoCenterY = cardY + 430;
+  const photoRadius = 220;
+
+  // Woven Sawtooth Pattern Ring
   ctx.save();
   ctx.beginPath();
-  ctx.roundRect(photoX, photoY, photoSize, photoSize, borderRadius);
+  ctx.arc(photoCenterX, photoCenterY, photoRadius + 18, 0, Math.PI * 2);
+  ctx.fillStyle = '#FFC107';
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(photoCenterX, photoCenterY, photoRadius + 10, 0, Math.PI * 2);
+  ctx.fillStyle = '#E6005C';
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(photoCenterX, photoCenterY, photoRadius + 4, 0, Math.PI * 2);
+  ctx.fillStyle = '#FFFDF0';
+  ctx.fill();
+
+  // Circular Photo Clip
+  ctx.beginPath();
+  ctx.arc(photoCenterX, photoCenterY, photoRadius, 0, Math.PI * 2);
   ctx.clip();
 
   if (image) {
-    drawTransformedImage(ctx, image, photoX, photoY, photoSize, photoSize, zoom, posX, posY);
+    drawTransformedImage(
+      ctx,
+      image,
+      photoCenterX - photoRadius,
+      photoCenterY - photoRadius,
+      photoRadius * 2,
+      photoRadius * 2,
+      zoom,
+      posX,
+      posY
+    );
   } else {
-    ctx.fillStyle = '#022C1F';
-    ctx.fillRect(photoX, photoY, photoSize, photoSize);
-
-    ctx.fillStyle = 'rgba(255, 230, 0, 0.5)';
-    ctx.font = 'bold 36px "Space Grotesk", sans-serif';
+    ctx.fillStyle = '#02402E';
+    ctx.fillRect(photoCenterX - photoRadius, photoCenterY - photoRadius, photoRadius * 2, photoRadius * 2);
+    ctx.fillStyle = '#FFC107';
+    ctx.font = 'bold 26px "Space Grotesk", sans-serif';
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('DROP PHOTO HERE', photoX + photoSize / 2, photoY + photoSize / 2);
+    ctx.fillText('DROP PHOTO', photoCenterX, photoCenterY);
   }
-
-  const innerVignette = ctx.createRadialGradient(
-    photoX + photoSize / 2,
-    photoY + photoSize / 2,
-    photoSize * 0.35,
-    photoX + photoSize / 2,
-    photoY + photoSize / 2,
-    photoSize * 0.55
-  );
-  innerVignette.addColorStop(0, 'transparent');
-  innerVignette.addColorStop(1, 'rgba(1, 20, 14, 0.45)');
-  ctx.fillStyle = innerVignette;
-  ctx.fillRect(photoX, photoY, photoSize, photoSize);
-
   ctx.restore();
 
-  // 3. Multi-Layered Glowing Framing Border
-  ctx.save();
-  ctx.lineWidth = 10;
-  const outerBorderGrad = ctx.createLinearGradient(photoX, photoY, photoX + photoSize, photoY + photoSize);
-  outerBorderGrad.addColorStop(0, '#FFE600');
-  outerBorderGrad.addColorStop(0.35, '#FF007A');
-  outerBorderGrad.addColorStop(0.7, '#00F0FF');
-  outerBorderGrad.addColorStop(1, '#FFE600');
-  
-  ctx.strokeStyle = outerBorderGrad;
-  ctx.beginPath();
-  ctx.roundRect(photoX, photoY, photoSize, photoSize, borderRadius);
-  ctx.stroke();
+  // 9. Name & Role Pill Boxes Below Avatar
+  let infoY = photoCenterY + photoRadius + 30;
 
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-  ctx.beginPath();
-  ctx.roundRect(photoX + 4, photoY + 4, photoSize - 8, photoSize - 8, borderRadius - 4);
-  ctx.stroke();
-
-  ctx.restore();
-
-  // 4. Header Badge
-  const headerY = 48;
-  const badgeW = 540;
-  const badgeH = 68;
-  const badgeX = (width - badgeW) / 2;
+  // Name Box (Dark Emerald Pill)
+  const nameBoxW = 480;
+  const nameBoxH = 56;
+  const nameBoxX = width / 2 - nameBoxW / 2;
 
   ctx.save();
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-  ctx.shadowBlur = 24;
-  ctx.shadowOffsetY = 8;
-
-  const badgeGrad = ctx.createLinearGradient(badgeX, headerY, badgeX + badgeW, headerY + badgeH);
-  badgeGrad.addColorStop(0, 'rgba(1, 35, 24, 0.96)');
-  badgeGrad.addColorStop(1, 'rgba(2, 24, 17, 0.96)');
-  ctx.fillStyle = badgeGrad;
-  ctx.strokeStyle = '#FFE600';
+  ctx.fillStyle = '#02402E';
+  ctx.strokeStyle = '#FFC107';
   ctx.lineWidth = 2.5;
-
   ctx.beginPath();
-  ctx.roundRect(badgeX, headerY, badgeW, badgeH, 34);
+  ctx.roundRect(nameBoxX, infoY, nameBoxW, nameBoxH, 18);
   ctx.fill();
   ctx.stroke();
-  ctx.restore();
 
-  ctx.save();
-  ctx.fillStyle = '#FFE600';
-  ctx.font = '900 24px "Space Grotesk", sans-serif';
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
-  ctx.shadowColor = 'rgba(255, 230, 0, 0.5)';
-  ctx.shadowBlur = 10;
-  ctx.fillText('HACKER HOUSE', badgeX + 32, headerY + badgeH / 2);
-  ctx.restore();
-
-  const pinkW = 82;
-  const pinkH = 38;
-  const pinkX = badgeX + 258;
-  const pinkY = headerY + (badgeH - pinkH) / 2;
-
-  ctx.save();
-  ctx.fillStyle = '#FF007A';
-  ctx.shadowColor = 'rgba(255, 0, 122, 0.6)';
-  ctx.shadowBlur = 12;
-  ctx.beginPath();
-  ctx.roundRect(pinkX, pinkY, pinkW, pinkH, 12);
-  ctx.fill();
-
-  ctx.fillStyle = '#FFE600';
-  ctx.font = 'bold 18px "Space Grotesk", sans-serif';
+  const displayName = name.trim() ? name.toUpperCase() : 'YOUR NAME';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '900 28px "Space Grotesk", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('GOA', pinkX + pinkW / 2, pinkY + pinkH / 2 + 1);
+  ctx.fillText(displayName, width / 2, infoY + nameBoxH / 2);
   ctx.restore();
 
-  ctx.save();
-  ctx.fillStyle = '#A7F3D0';
-  ctx.font = 'bold 12px "JetBrains Mono", monospace';
-  ctx.textAlign = 'right';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('2026 // BUILDER', badgeX + badgeW - 28, headerY + badgeH / 2);
-  ctx.restore();
-
-  // 5. Bottom Hashtag Pill
-  const footerY = height - 112;
-  const pillW = 620;
-  const pillH = 74;
-  const pillX = (width - pillW) / 2;
+  // Role Box (Solar Yellow Pill)
+  infoY += nameBoxH + 14;
+  const roleBoxW = 420;
+  const roleBoxH = 46;
+  const roleBoxX = width / 2 - roleBoxW / 2;
 
   ctx.save();
-  ctx.shadowColor = 'rgba(255, 0, 122, 0.5)';
-  ctx.shadowBlur = 28;
-  ctx.shadowOffsetY = 8;
-
-  const pinkPillGrad = ctx.createLinearGradient(pillX, footerY, pillX + pillW, footerY);
-  pinkPillGrad.addColorStop(0, '#FF007A');
-  pinkPillGrad.addColorStop(0.5, '#E6006B');
-  pinkPillGrad.addColorStop(1, '#FF007A');
-
-  ctx.fillStyle = pinkPillGrad;
-  ctx.strokeStyle = '#FFE600';
-  ctx.lineWidth = 3;
-
+  ctx.fillStyle = '#FFC107';
+  ctx.strokeStyle = '#02402E';
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.roundRect(pillX, footerY, pillW, pillH, 37);
+  ctx.roundRect(roleBoxX, infoY, roleBoxW, roleBoxH, 16);
   ctx.fill();
   ctx.stroke();
 
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.roundRect(pillX + 3, footerY + 3, pillW - 6, pillH - 6, 34);
-  ctx.stroke();
-
-  ctx.fillStyle = '#FFE600';
-  ctx.font = '900 34px "Space Grotesk", sans-serif';
+  const displayRole = role.trim() ? role.toUpperCase() : 'FULL STACK DEVELOPER';
+  ctx.fillStyle = '#E6005C';
+  ctx.font = '900 16px "Space Grotesk", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-  ctx.shadowBlur = 8;
-  ctx.fillText('#FrameInGoa', pillX + pillW / 2, footerY + pillH / 2 - 2);
-
+  ctx.fillText(`⚡  ${displayRole}  ⚡`, width / 2, infoY + roleBoxH / 2);
   ctx.restore();
 
-  drawUltraCornerHUD(ctx, photoX - 22, photoY - 22, photoSize + 44, photoSize + 44);
+  // 10. Bottom Pink Ribbon Banner (#FRAMEINGOA)
+  const ribbonY = cardY + cardH - 70;
+  const ribbonW = cardW - 140;
+  const ribbonH = 54;
+  const ribbonX = width / 2 - ribbonW / 2;
+
+  ctx.save();
+  ctx.fillStyle = '#E6005C';
+  ctx.beginPath();
+  ctx.roundRect(ribbonX, ribbonY, ribbonW, ribbonH, 14);
+  ctx.fill();
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '900 26px "Space Grotesk", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('✦   #FRAMEINGOA   ✦', width / 2, ribbonY + ribbonH / 2);
+  ctx.restore();
 }
 
 /**
@@ -313,13 +429,11 @@ function renderBuilderFormat(
 
   // 3. Top Center Lanyard Slot & Hanging Pink Lanyard Badge
   ctx.save();
-  // Lanyard Slot Cutout
   ctx.fillStyle = '#012418';
   ctx.beginPath();
   ctx.roundRect(width / 2 - 60, cardY + 8, 120, 20, 10);
   ctx.fill();
 
-  // Hanging Hot Pink Lanyard Tag (#E6005C)
   const tagW = 150;
   const tagH = 140;
   const tagX = (width - tagW) / 2;
@@ -333,10 +447,8 @@ function renderBuilderFormat(
   ctx.fill();
   ctx.stroke();
 
-  // Gold Palm Tree Icon in Tag
   drawVectorPalmTree(ctx, width / 2, tagY + 32, 22, '#FFE600');
 
-  // Text inside Lanyard Tag
   ctx.fillStyle = '#FFE600';
   ctx.font = '900 20px "Space Grotesk", sans-serif';
   ctx.textAlign = 'center';
@@ -355,13 +467,11 @@ function renderBuilderFormat(
   const stampW = 150;
   const stampH = 130;
 
-  // Stamp Serrated Border
   ctx.fillStyle = '#02402E';
   ctx.fillRect(stampX, stampY, stampW, stampH);
   ctx.fillStyle = '#FFFDF0';
   ctx.fillRect(stampX + 6, stampY + 6, stampW - 12, stampH - 12);
 
-  // Stamp Contents
   ctx.fillStyle = '#E6005C';
   ctx.font = '900 16px "Space Grotesk", sans-serif';
   ctx.textAlign = 'left';
@@ -370,14 +480,12 @@ function renderBuilderFormat(
   ctx.font = 'bold 12px "Space Grotesk", sans-serif';
   ctx.fillText('INDIA', stampX + 16, stampY + 44);
 
-  // Stamp Palm & Sun
   ctx.fillStyle = '#FF9900';
   ctx.beginPath();
   ctx.arc(stampX + 110, stampY + 75, 18, 0, Math.PI * 2);
   ctx.fill();
   drawVectorPalmTree(ctx, stampX + 105, stampY + 60, 20, '#02402E');
 
-  // Stamp Wavy Cancel Lines
   ctx.strokeStyle = '#E6005C';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -389,7 +497,7 @@ function renderBuilderFormat(
   ctx.stroke();
   ctx.restore();
 
-  // 5. Top Right Circular Postmark Stamp (BUILD IN GOA * SHIP FROM PARADISE)
+  // 5. Top Right Circular Postmark Stamp
   ctx.save();
   const circleStampX = cardX + cardW - 120;
   const circleStampY = cardY + 110;
@@ -406,13 +514,11 @@ function renderBuilderFormat(
   ctx.arc(circleStampX, circleStampY, circleRadius - 8, 0, Math.PI * 2);
   ctx.stroke();
 
-  // Circular Text
   ctx.fillStyle = '#02402E';
   ctx.font = 'bold 10px "Space Grotesk", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  // Circular Text Along Arc
   drawCircularText(ctx, 'BUILD IN GOA ✦ SHIP FROM PARADISE', circleStampX, circleStampY, circleRadius - 14, -Math.PI / 2);
   drawVectorPalmTree(ctx, circleStampX, circleStampY - 10, 22, '#02402E');
   ctx.restore();
@@ -421,13 +527,11 @@ function renderBuilderFormat(
   const titleY = cardY + 215;
   ctx.save();
 
-  // "HACKER" Text (Left)
   ctx.fillStyle = '#02402E';
   ctx.font = '900 58px "Space Grotesk", serif';
   ctx.textAlign = 'right';
   ctx.fillText('HACKER', width / 2 - 85, titleY);
 
-  // "GOA" Pink Badge (Center)
   const goaW = 100;
   const goaH = 46;
   const goaX = width / 2 - goaW / 2;
@@ -443,7 +547,6 @@ function renderBuilderFormat(
   ctx.textAlign = 'center';
   ctx.fillText('GOA', width / 2, goaY + 31);
 
-  // "HOUSE" Text (Right)
   ctx.fillStyle = '#02402E';
   ctx.font = '900 58px "Space Grotesk", serif';
   ctx.textAlign = 'left';
@@ -452,7 +555,6 @@ function renderBuilderFormat(
 
   // 7. Side Vertical Details & Badges
   ctx.save();
-  // Left Vertical Date: ✦ 28 - 31 OCT 2026 ✦
   ctx.save();
   ctx.translate(cardX + 44, cardY + 410);
   ctx.rotate(-Math.PI / 2);
@@ -462,15 +564,12 @@ function renderBuilderFormat(
   ctx.fillText('✦  28 - 31 OCT 2026  ✦', 0, 0);
   ctx.restore();
 
-  // Left Wooden Signpost (BUILD, SHIP, REPEAT)
   const signX = cardX + 110;
   const signY = cardY + 430;
 
-  // Pole
   ctx.fillStyle = '#795548';
   ctx.fillRect(signX + 45, signY, 14, 180);
 
-  // Sign 1: BUILD (Yellow)
   ctx.fillStyle = '#FFC107';
   ctx.beginPath();
   ctx.roundRect(signX + 10, signY + 20, 90, 36, 6);
@@ -480,7 +579,6 @@ function renderBuilderFormat(
   ctx.textAlign = 'center';
   ctx.fillText('BUILD', signX + 55, signY + 43);
 
-  // Sign 2: SHIP (Pink)
   ctx.fillStyle = '#E6005C';
   ctx.beginPath();
   ctx.roundRect(signX, signY + 68, 100, 36, 6);
@@ -489,7 +587,6 @@ function renderBuilderFormat(
   ctx.font = '900 15px "Space Grotesk", sans-serif';
   ctx.fillText('SHIP', signX + 50, signY + 91);
 
-  // Sign 3: REPEAT (Emerald)
   ctx.fillStyle = '#02402E';
   ctx.beginPath();
   ctx.roundRect(signX + 5, signY + 116, 110, 36, 6);
@@ -498,11 +595,9 @@ function renderBuilderFormat(
   ctx.font = '900 14px "Space Grotesk", sans-serif';
   ctx.fillText('REPEAT', signX + 60, signY + 139);
 
-  // Left Surfboards & Palm Leaves (Bottom Left)
   drawSurfboard(ctx, cardX + 65, cardY + 650, 40, 150, '#FFC107');
   drawSurfboard(ctx, cardX + 105, cardY + 650, 40, 150, '#E6005C');
 
-  // Right Badge: LET'S BUILD!
   const rightBadgeX = cardX + cardW - 140;
   const rightBadgeY = cardY + 390;
   ctx.fillStyle = '#FFC107';
@@ -519,11 +614,9 @@ function renderBuilderFormat(
   ctx.fillText("LET'S", rightBadgeX + 15, rightBadgeY + 28);
   ctx.fillText('BUILD!', rightBadgeX + 15, rightBadgeY + 50);
 
-  // Right Villa House Illustration & Pink Scooter
   drawGoaVilla(ctx, cardX + cardW - 165, cardY + 500);
   drawPinkScooter(ctx, cardX + cardW - 120, cardY + 630);
 
-  // Right Vertical Location: ✦ GOA, INDIA ✦
   ctx.save();
   ctx.translate(cardX + cardW - 36, cardY + 410);
   ctx.rotate(Math.PI / 2);
@@ -539,7 +632,6 @@ function renderBuilderFormat(
   const photoCenterY = cardY + 470;
   const photoRadius = 210;
 
-  // Sawtooth Pattern Ring Around Circle
   ctx.save();
   ctx.beginPath();
   ctx.arc(photoCenterX, photoCenterY, photoRadius + 18, 0, Math.PI * 2);
@@ -556,7 +648,6 @@ function renderBuilderFormat(
   ctx.fillStyle = '#FFFDF0';
   ctx.fill();
 
-  // Circular Photo Mask
   ctx.beginPath();
   ctx.arc(photoCenterX, photoCenterY, photoRadius, 0, Math.PI * 2);
   ctx.clip();
@@ -586,7 +677,6 @@ function renderBuilderFormat(
   // 9. Name & Role Pill Boxes Below Avatar
   let infoY = photoCenterY + photoRadius + 30;
 
-  // Name Box (Dark Emerald Pill)
   const nameBoxW = 460;
   const nameBoxH = 54;
   const nameBoxX = width / 2 - nameBoxW / 2;
@@ -608,7 +698,6 @@ function renderBuilderFormat(
   ctx.fillText(displayName, width / 2, infoY + nameBoxH / 2);
   ctx.restore();
 
-  // Role Box (Solar Yellow Pill)
   infoY += nameBoxH + 14;
   const roleBoxW = 410;
   const roleBoxH = 46;
@@ -638,7 +727,6 @@ function renderBuilderFormat(
   const gridX = cardX + 35;
 
   ctx.save();
-  // Dotted Column Lines
   ctx.strokeStyle = '#E6005C';
   ctx.lineWidth = 2;
   ctx.setLineDash([6, 6]);
@@ -666,7 +754,6 @@ function renderBuilderFormat(
   ctx.font = '900 18px "Space Grotesk", sans-serif';
   ctx.fillText(displayTitle.toUpperCase(), col1CenterX, gridY + 48);
 
-  // Draw Decorative QR Code
   drawVectorQRCode(ctx, col1CenterX - 60, gridY + 70, 120);
 
   // --- COLUMN 2: BEACH BAG ---
@@ -676,7 +763,6 @@ function renderBuilderFormat(
   ctx.textAlign = 'center';
   ctx.fillText('✦  BEACH BAG  ✦', col2CenterX, gridY + 20);
 
-  // Beach Bag List
   const listItems = [
     { icon: '🥥', text: 'COCONUT' },
     { icon: '💻', text: 'VS CODE' },
@@ -692,7 +778,6 @@ function renderBuilderFormat(
     ctx.fillText(item.text, col2CenterX - 15, itemY);
   });
 
-  // Sunset Ocean Wave Illustration at bottom of Col 2
   drawOceanSunset(ctx, col2CenterX, gridY + 215, 110, 45);
 
   // --- COLUMN 3: CURRENTLY SHIPPING ---
@@ -706,7 +791,6 @@ function renderBuilderFormat(
   ctx.font = '900 16px "Space Grotesk", sans-serif';
   ctx.fillText('BUILDING THE FUTURE', col3CenterX, gridY + 46);
 
-  // Wavy lines
   ctx.strokeStyle = '#02402E';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -725,9 +809,7 @@ function renderBuilderFormat(
   ctx.font = 'bold 11px "JetBrains Mono", monospace';
   ctx.fillText('#HH-GOA-7757', col3CenterX, gridY + 130);
 
-  // Vector Barcode
   drawVectorBarcode(ctx, col3CenterX - 75, gridY + 148, 150, 42);
-
   ctx.restore();
 
   // 11. Bottom Pink Ribbon Banner (#FRAMEINGOA)
@@ -791,13 +873,11 @@ function drawVectorPalmTree(ctx: CanvasRenderingContext2D, x: number, y: number,
   ctx.strokeStyle = color;
   ctx.lineWidth = 2.5;
 
-  // Trunk
   ctx.beginPath();
   ctx.moveTo(x, y + size);
   ctx.quadraticCurveTo(x + 4, y + size / 2, x + 2, y);
   ctx.stroke();
 
-  // Leaves
   const leaves = [
     { dx: -size, dy: -size * 0.5 },
     { dx: size, dy: -size * 0.5 },
@@ -850,7 +930,6 @@ function drawSurfboard(ctx: CanvasRenderingContext2D, x: number, y: number, w: n
   ctx.fill();
   ctx.stroke();
 
-  // Stripe
   ctx.strokeStyle = '#02402E';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -865,7 +944,6 @@ function drawSurfboard(ctx: CanvasRenderingContext2D, x: number, y: number, w: n
  */
 function drawGoaVilla(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.save();
-  // Roof (Pink)
   ctx.fillStyle = '#E6005C';
   ctx.beginPath();
   ctx.moveTo(x + 40, y);
@@ -874,14 +952,12 @@ function drawGoaVilla(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.closePath();
   ctx.fill();
 
-  // Body (Yellow)
   ctx.fillStyle = '#FFC107';
   ctx.strokeStyle = '#02402E';
   ctx.lineWidth = 2;
   ctx.fillRect(x + 10, y + 40, 60, 60);
   ctx.strokeRect(x + 10, y + 40, 60, 60);
 
-  // Door
   ctx.fillStyle = '#02402E';
   ctx.fillRect(x + 32, y + 70, 16, 30);
   ctx.restore();
@@ -896,14 +972,12 @@ function drawPinkScooter(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.strokeStyle = '#02402E';
   ctx.lineWidth = 2;
 
-  // Wheels
   ctx.fillStyle = '#333333';
   ctx.beginPath();
   ctx.arc(x + 12, y + 30, 10, 0, Math.PI * 2);
   ctx.arc(x + 52, y + 30, 10, 0, Math.PI * 2);
   ctx.fill();
 
-  // Body
   ctx.fillStyle = '#E6005C';
   ctx.beginPath();
   ctx.roundRect(x, y + 10, 60, 16, 6);
@@ -926,12 +1000,10 @@ function drawVectorQRCode(ctx: CanvasRenderingContext2D, x: number, y: number, s
   ctx.fillStyle = '#02402E';
   const cellSize = (size - 16) / 7;
 
-  // Corners
   ctx.fillRect(x + 8, y + 8, cellSize * 2.2, cellSize * 2.2);
   ctx.fillRect(x + size - 8 - cellSize * 2.2, y + 8, cellSize * 2.2, cellSize * 2.2);
   ctx.fillRect(x + 8, y + size - 8 - cellSize * 2.2, cellSize * 2.2, cellSize * 2.2);
 
-  // Center palm icon
   drawVectorPalmTree(ctx, x + size / 2 - 2, y + size / 2 - 12, 14, '#E6005C');
   ctx.restore();
 }
@@ -941,13 +1013,11 @@ function drawVectorQRCode(ctx: CanvasRenderingContext2D, x: number, y: number, s
  */
 function drawOceanSunset(ctx: CanvasRenderingContext2D, cx: number, cy: number, w: number, h: number) {
   ctx.save();
-  // Sun
   ctx.fillStyle = '#FF9900';
   ctx.beginPath();
   ctx.arc(cx, cy - 6, 20, Math.PI, 0);
   ctx.fill();
 
-  // Waves
   ctx.fillStyle = '#02402E';
   ctx.beginPath();
   ctx.roundRect(cx - w / 2, cy - 2, w, h, 8);
@@ -971,61 +1041,5 @@ function drawVectorBarcode(ctx: CanvasRenderingContext2D, x: number, y: number, 
     }
     curX += bw + 3;
   }
-  ctx.restore();
-}
-
-/**
- * Ultra-futuristic corner reticles.
- */
-function drawUltraCornerHUD(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number
-) {
-  ctx.save();
-  ctx.strokeStyle = '#FFE600';
-  ctx.lineWidth = 3.5;
-  ctx.shadowColor = 'rgba(255, 230, 0, 0.5)';
-  ctx.shadowBlur = 10;
-
-  const len = 28;
-
-  // Top Left
-  ctx.beginPath();
-  ctx.moveTo(x, y + len);
-  ctx.lineTo(x, y);
-  ctx.lineTo(x + len, y);
-  ctx.stroke();
-
-  // Top Right
-  ctx.beginPath();
-  ctx.moveTo(x + w - len, y);
-  ctx.lineTo(x + w, y);
-  ctx.lineTo(x + w, y + len);
-  ctx.stroke();
-
-  // Bottom Left
-  ctx.beginPath();
-  ctx.moveTo(x, y + h - len);
-  ctx.lineTo(x, y + h);
-  ctx.lineTo(x + len, y + h);
-  ctx.stroke();
-
-  // Bottom Right
-  ctx.beginPath();
-  ctx.moveTo(x + w - len, y + h);
-  ctx.lineTo(x + w, y + h);
-  ctx.lineTo(x + w, y + h - len);
-  ctx.stroke();
-
-  ctx.fillStyle = '#FF007A';
-  ctx.font = 'bold 16px sans-serif';
-  ctx.fillText('+', x - 12, y - 8);
-  ctx.fillText('+', x + w + 4, y - 8);
-  ctx.fillText('+', x - 12, y + h + 18);
-  ctx.fillText('+', x + w + 4, y + h + 18);
-
   ctx.restore();
 }
